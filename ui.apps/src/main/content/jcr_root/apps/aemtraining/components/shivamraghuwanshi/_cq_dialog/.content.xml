@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="nt:unstructured"
+    jcr:title="shivam dialog"
+    sling:resourceType="cq/gui/components/authoring/dialog">
+    <content
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns">
+        <items jcr:primaryType="nt:unstructured">
+            <container
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/container">
+                <items jcr:primaryType="nt:unstructured">
+                    <tabs
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/tabs"
+                        maximized="{Boolean}true">
+                        <items jcr:primaryType="nt:unstructured">
+                            <textfieldtab
+                                jcr:primaryType="nt:unstructured"
+                                jcr:title="TextField"
+                                sling:resourceType="granite/ui/components/coral/foundation/container">
+                                <items jcr:primaryType="nt:unstructured">
+                                    <text
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        emptyText="Enter  your name"
+                                        fieldLabel="Name"
+                                        name="./textName"
+                                        required="{Boolean}false">
+                                        <tabs/>
+                                    </text>
+                                </items>
+                            </textfieldtab>
+                            <multifieldtab
+                                jcr:primaryType="nt:unstructured"
+                                jcr:title="field"
+                                sling:resourceType="granite/ui/components/coral/foundation/container">
+                                <items jcr:primaryType="nt:unstructured">
+                                    <multifield
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
+                                        composite="{Boolean}true"
+                                        fieldLabel="AddText">
+                                        <field
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                                            name="./FieldData">
+                                            <items jcr:primaryType="nt:unstructured">
+                                                <text
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                    fieldLabel="Name"
+                                                    name="./textNamefield"/>
+                                                <text1
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                    fieldLabel="surname"
+                                                    name="./textsurname"/>
+                                            </items>
+                                        </field>
+                                    </multifield>
+                                </items>
+                            </multifieldtab>
+                            <dropdowntab
+                                jcr:primaryType="nt:unstructured"
+                                jcr:title="drop"
+                                sling:resourceType="granite/ui/components/coral/foundation/container">
+                                <items jcr:primaryType="nt:unstructured">
+                                    <select
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                        fieldLabel="Dropdown"
+                                        name="./select">
+                                        <items jcr:primaryType="nt:unstructured">
+                                            <shivam
+                                                jcr:primaryType="nt:unstructured"
+                                                text="shivam"
+                                                value="SR"/>
+                                            <Akash
+                                                jcr:primaryType="nt:unstructured"
+                                                text="Akash"
+                                                value="AS"/>
+                                        </items>
+                                    </select>
+                                </items>
+                            </dropdowntab>
+                            <Uploadandbrowsetab
+                                jcr:primaryType="nt:unstructured"
+                                jcr:title="Upload and Browse"
+                                sling:resourceType="granite/ui/components/coral/foundation/container">
+                                <items jcr:primaryType="nt:unstructured">
+                                    <label
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        fieldLabel="Button label"
+                                        name="./label"/>
+                                    <linkto
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/pathfield"
+                                        fieldLabel="Link to"
+                                        name="./linkTo"
+                                        rootPath="/content/we-retail"
+                                        suffix=".html"/>
+                                    <checkbox
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                        fieldLabel="check"
+                                        name="./check"
+                                        text="click to open in new tab"
+                                        value="_blank"/>
+                                </items>
+                            </Uploadandbrowsetab>
+                        </items>
+                    </tabs>
+                </items>
+            </container>
+        </items>
+    </content>
+</jcr:root>

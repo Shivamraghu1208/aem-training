@@ -1,0 +1,10 @@
+<sly data-sly-use.templates="core/wcm/components/commons/v1/templates.html"/>
+<sly data-sly-test.isAuthored="${properties.textName}"/>
+<div data-sly-test="${isAuthored}">
+    <h3>Name :${properties.textName}<h3>
+
+        <button><a href="${properties.linkTo}.html" target="${properties.check}">Click me</a></button>
+
+</div>
+<sly data-sly-call="${templates.placeholder @ isEmpty = !isAuthored, classAppend='cmp-text'}"></sly>
+
