@@ -1,22 +1,21 @@
 <sly data-sly-use.templates="core/wcm/components/commons/v1/templates.html"/>
 <sly data-sly-use.student="com.adobe.aem.sample.site.core.models.StudentModel"/>
 
-<sly data-sly-test.check="${student.passOrFail}"/>
 
-<div data-sly-test.tesst="${check}">
-<div data-sly-list.obj="${student.passStudentList}">
-    <h3>Name :${obj.firstname}</h3>
-    <h3>LastName :${obj.lastname}</h3>
-    <h3>Phone :${obj.phonenumber}</h3>
-    <h3>Science :${obj.scienceMarks}</h3>
-    <h3>Math :${obj.MathsMarks} </h3>
-    <h3>Hindi :${obj.hindiMarks}</h3>
-    <h3>socialScience :${obj.socialScienceMarks} </h3>
+<div class="aaaaa" data-sly-test="${student.pass}">
+    <div data-sly-list.obj="${student.passStudentList}">
+        <h3>Name :${obj.firstname}</h3>
+        <h3>LastName :${obj.lastname}</h3>
+        <h3>Phone :${obj.phonenumber}</h3>
+        <h3>Science :${obj.scienceMarks}</h3>
+        <h3>Math :${obj.MathsMarks} </h3>
+        <h3>Hindi :${obj.hindiMarks}</h3>
+        <h3>socialScience :${obj.socialScienceMarks} </h3>
 
 
+    </div>
 </div>
-</div>
-<div data-sly-test="${check}">
+<div data-sly-test="${student.fail}">
     <div data-sly-list.obj="${student.failStudentList}">
         <h3>Name :${obj.firstname}</h3>
         <h3>LastName :${obj.lastname}</h3>

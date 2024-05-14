@@ -1,10 +1,8 @@
 package com.adobe.aem.sample.site.core.models;
 
 import com.adobe.aem.sample.site.core.Beans.StudentPojo;
-import jdk.nashorn.internal.objects.annotations.Getter;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ValueMap;
-import org.apache.sling.models.annotations.Default;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.ChildResource;
@@ -32,10 +30,15 @@ public class StudentModel {
 
     @ValueMapValue
     String select;
-     private boolean passOrFail;
-    public boolean isPassOrFail() {
-        return passOrFail ;
+     private boolean pass=false;
+    private boolean fail=false;
+    public boolean isPass() {
+        return pass;
     }
+    public boolean isFail() {
+        return fail;
+    }
+
 
     public long getPercentage() {
         return percentage;
@@ -68,9 +71,9 @@ public class StudentModel {
     protected void init()
     {
         if("pass".equals(select)){
-            passOrFail=true;
-    }else if("fail".equals(select)){
-            passOrFail =false;
+            pass =true;
+    }else if("Fail".equals(select)){
+            fail =true;
         }
         if(items!=null)
         {
