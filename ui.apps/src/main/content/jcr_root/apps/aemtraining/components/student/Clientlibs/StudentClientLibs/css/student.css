@@ -1,0 +1,26 @@
+
+/* Container for student details */
+.aaaaa {
+  background-color:#adc5e3;
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding a subtle shadow */
+  border-radius: 8px; /* Rounded corners */
+}
+
+/* Heading styles */
+.aaaaa h3 {
+  margin: 5px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+/* Styling for pass and fail sections */
+.pass-section {
+  background-color: #d4edda; /* Green for pass */
+}
+
+.fail-section {
+  background-color: #f8d7da; /* Red for fail */
+}
