@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="nt:unstructured"
+    jcr:title="Student dialog"
+    sling:resourceType="cq/gui/components/authoring/dialog">
+    <content
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns">
+        <items jcr:primaryType="nt:unstructured">
+            <container
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/container">
+                <items jcr:primaryType="nt:unstructured">
+                    <multifield
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
+                            composite="{Boolean}true"
+                            fieldLabel="AddText">
+                        <field
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/container"
+                                name="./FieldData">
+                            <items jcr:primaryType="nt:unstructured">
+                                <text1
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        emptyText="Enter  your name"
+                                        fieldLabel="First Name"
+                                        name="./firstname"
+                                        required="{Boolean}true"/>
+                                <text2
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        emptyText="Enter Last Name"
+                                        fieldLabel="Last Name"
+                                        name="./lastname"
+                                        required="{Boolean}true"/>
+                                <text3
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/numberfield"
+                                        emptyText="Enter Phone Name"
+                                        fieldLabel=" Phone Number"
+                                        name="./phonenumber"
+                                        required="{Boolean}true"/>
+                                <text4
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/numberfield"
+                                        emptyText="Enter your Marks"
+                                        fieldLabel="Maths "
+                                        name="./MathsMarks"
+                                        required="{Boolean}true"/>
+                                <text5
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/numberfield"
+                                        emptyText="Enter your Marks"
+                                        fieldLabel="Science"
+                                        name="./ScienceMarks"
+                                        required="{Boolean}true"/>
+                                <text6
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/
+                                        components/coral/foundation/form/numberfield"
+                                        emptyText="Enter your Marks"
+                                        fieldLabel="English"
+                                        name="./EnglishMarks"
+                                        required="{Boolean}true"/>
+                                <text7
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/numberfield"
+                                        emptyText="Enter your Marks"
+                                        fieldLabel="Hindi"
+                                        name="./HindiMarks"
+                                        required="{Boolean}true"/>
+                                <text8
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/numberfield"
+                                        emptyText="Enter your Marks"
+                                        fieldLabel="SocialScience"
+                                        name="./SocialScienceMarks"
+                                        required="{Boolean}true"/>
+
+
+
+                            </items>
+                        </field>
+                   </multifield>
+                     <select
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                            fieldLabel="Dropdown"
+                            name="./select">
+                        <items jcr:primaryType="nt:unstructured">
+                            <Pass
+                                    jcr:primaryType="nt:unstructured"
+                                    text="Pass Student"
+                                    value="pass"/>
+                            <Fail
+                                    jcr:primaryType="nt:unstructured"
+                                    text="FailStudent"
+                                    value="Fail"/>
+                        </items>
+                    </select>
+
+                </items>
+            </container>
+        </items>
+    </content>
+</jcr:root>
