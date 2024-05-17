@@ -1,0 +1,25 @@
+<sly data-sly-use.templates="core/wcm/components/commons/v1/templates.html"/>
+<sly data-sly-use.product="com.adobe.aem.sample.site.core.models.ProductDetailModel"/>
+<sly data-sly-test.isAuthored="${product.heading}"/>
+
+<div data-sly-test="${isAuthored}">
+
+    <h2 data-sly-element="${product.select}">${product.heading}</h2>
+
+    <div class="product-container" data-sly-list.obj="${product.list}">
+
+        <div class="product-details">
+            <h2>Id: ${obj.id}</h2>
+            <h2>Title: ${obj.title}</h2>
+            <h2>Price: ${obj.price}</h2>
+            <h2>Brand: ${obj.brand}</h2>
+        </div>
+
+        <div class="product-image">
+            <img src="${obj.image}" alt="Description of the image" width="500" height="auto">
+        </div>
+
+    </div>
+</div>
+
+<sly data-sly-call="${templates.placeholder @ isEmpty = !isAuthored, classAppend='cmp-text'}"></sly>
