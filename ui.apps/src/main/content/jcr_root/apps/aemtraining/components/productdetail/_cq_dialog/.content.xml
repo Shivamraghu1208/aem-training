@@ -24,7 +24,7 @@
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="granite/ui/components/coral/foundation/form/select"
                             fieldLabel="Choose Size"
-                            name="./select">
+                            name="./selectHeadingTag">
                         <items jcr:primaryType="nt:unstructured">
                             <h1
                                     jcr:primaryType="nt:unstructured"
@@ -48,7 +48,7 @@
                                     value="h5"/>
                             <h6
                                     jcr:primaryType="nt:unstructured"
-                                    text="h6 tag"
+                                    text="h6 "
                                     value="h6"/>
                         </items>
                     </select>
@@ -57,7 +57,7 @@
                             sling:resourceType="granite/ui/components/coral/foundation/form/numberfield"
                             emptyText="Enter No of Products"
                             fieldLabel="Number Of Products"
-                            name="./NumOfProducts"
+                            name="./numberOfProducts"
                             required="{Boolean}true"/>
                 </items>
             </container>

@@ -31,10 +31,10 @@ public class ProductDetailServiceImpl implements ProductDetailService{
     @Activate
     @Modified
     protected void activate(ProductDetailServiceConfiguration configuration){
-        String s = configuration.apiUrl();
+        String apiUrl = configuration.apiUrl();
 
         try {
-          URL url = new URL(s);
+          URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("accept", "application/json");
             InputStream inputStream = connection.getInputStream();
