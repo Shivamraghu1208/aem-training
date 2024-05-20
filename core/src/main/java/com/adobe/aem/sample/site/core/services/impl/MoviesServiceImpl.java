@@ -11,16 +11,16 @@ import org.osgi.service.metatype.annotations.Designate;
 @Designate(ocd= MoviesServiceConfiguration.class)
 public class MoviesServiceImpl implements MoviesService {
 
-    String[] str;
+    private String[] movies;
     @Override
     public String[] getMovies() {
-        return str;
+        return movies;
     }
 
     @Activate
     @Modified
     protected void activate(MoviesServiceConfiguration configuration){
-        str = configuration.movies();
+        movies = configuration.movies();
     }
 
 }

@@ -22,31 +22,34 @@ import java.util.ArrayList;
 public class ProductDetailModel {
 
     @OSGiService
-    ProductDetailService productDetailService;
+    private ProductDetailService productDetailService;
     @ValueMapValue
-    String heading;
+    private String heading;
 
     private Logger logger = LoggerFactory.getLogger(ProductDetailModel.class);
-    
 
-    String response;
 
-    public ArrayList<Product> getList() {
-        return list;
-    }
+    private String response;
+
 
     ArrayList<Product> list = new ArrayList<>();
+
+
+
+    @ValueMapValue
+    private String selectHeadingTag;
+
+    @ValueMapValue
+    private long numberOfProducts;
+
 
     public String getResponse() {
         return response;
     }
 
-
-    @ValueMapValue
-    String selectHeadingTag;
-
-    @ValueMapValue
-    long numberOfProducts;
+    public ArrayList<Product> getList() {
+        return list;
+    }
 
     public String getHeading() {
         return heading;
@@ -62,8 +65,8 @@ public class ProductDetailModel {
 
         response = productDetailService.getResponse();
         JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-        if (!jsonObject.isJsonNull()) {
-            if (!jsonObject.get("products").isJsonNull()) {
+        if (!jsonObject.isJsonNull() && !jsonObject.get("products").isJsonNull()) {
+
                 JsonArray jsonArray = jsonObject.get("products").getAsJsonArray();
                 if (jsonArray != null) {
 
@@ -93,4 +96,3 @@ public class ProductDetailModel {
     }
 
 
-}

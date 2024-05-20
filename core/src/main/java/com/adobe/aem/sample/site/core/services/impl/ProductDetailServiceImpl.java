@@ -1,14 +1,17 @@
 package com.adobe.aem.sample.site.core.services.impl;
 
 
+import com.adobe.aem.sample.site.core.models.ProductDetailModel;
 import com.adobe.aem.sample.site.core.services.ProductDetailService;
-import com.adobe.aem.sample.site.core.services.config.MoviesServiceConfiguration;
+
 import com.adobe.aem.sample.site.core.services.config.ProductDetailServiceConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.metatype.annotations.Designate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +24,9 @@ import java.nio.charset.StandardCharsets;
 @Designate(ocd= ProductDetailServiceConfiguration.class)
 public class ProductDetailServiceImpl implements ProductDetailService{
 
-    String response;
+   private String response;
+
+    private Logger logger = LoggerFactory.getLogger(ProductDetailServiceImpl.class);
 
     @Override
     public String getResponse() {
@@ -40,9 +45,9 @@ public class ProductDetailServiceImpl implements ProductDetailService{
             InputStream inputStream = connection.getInputStream();
             response = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            logger.error("Incorrect url : {}, {}", e.getMessage(), e);
         } catch (IOException e) {
-            e.printStackTrace();
+           logger.error("Exception : IOException {}",e);
         }
 
 
