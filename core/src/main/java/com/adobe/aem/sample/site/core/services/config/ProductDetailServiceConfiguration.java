@@ -6,6 +6,6 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 @ObjectClassDefinition(name="Product detail configuration")
 public @interface ProductDetailServiceConfiguration {
     @AttributeDefinition(name="ApiUrl")
-    String apiUrl();
+    String api_url();
 
 }

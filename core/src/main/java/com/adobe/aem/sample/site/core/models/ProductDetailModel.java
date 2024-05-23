@@ -32,7 +32,7 @@ public class ProductDetailModel {
     private String response;
 
 
-    ArrayList<Product> list = new ArrayList<>();
+    private ArrayList<Product> list = new ArrayList<>();
 
 
 
@@ -80,14 +80,14 @@ public class ProductDetailModel {
                         long price = asJsonObject.get("price").getAsLong();
                         JsonArray images = asJsonObject.get("images").getAsJsonArray();
                         String image = images.get(0).getAsString();
-                        Product p = new Product();
-                        p.setId(id);
-                        p.setTitle(title);
-                        p.setBrand(brand);
-                        p.setPrice(price);
-                        p.setImage(image);
+                        Product product = new Product();
+                        product.setId(id);
+                        product.setTitle(title);
+                        product.setBrand(brand);
+                        product.setPrice(price);
+                        product.setImage(image);
 
-                        list.add(p);
+                        list.add(product);
 
                     }
                 }

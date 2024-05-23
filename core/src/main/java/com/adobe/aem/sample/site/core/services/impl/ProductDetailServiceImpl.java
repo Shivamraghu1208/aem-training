@@ -36,7 +36,7 @@ public class ProductDetailServiceImpl implements ProductDetailService{
     @Activate
     @Modified
     protected void activate(ProductDetailServiceConfiguration configuration){
-        String apiUrl = configuration.apiUrl();
+        String apiUrl = configuration.api_url();
 
         try {
           URL url = new URL(apiUrl);
