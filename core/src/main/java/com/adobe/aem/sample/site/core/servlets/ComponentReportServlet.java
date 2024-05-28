@@ -49,7 +49,7 @@ public class ComponentReportServlet extends SlingSafeMethodsServlet {
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
         list = new ArrayList<>();
         String componentResource = request.getParameter("Path");
-        if (!componentResource.isEmpty()) {
+        if (componentResource!=null) {
             Map<String, String> predicateMap = new HashMap<>();
             predicateMap.put("path", "/content");
             predicateMap.put("type", "nt:unstructured");
@@ -75,7 +75,7 @@ public class ComponentReportServlet extends SlingSafeMethodsServlet {
                                         String path = hit.getPath();
                                         list.add(path);
                                     } catch (RepositoryException e) {
-                                        e.printStackTrace();
+                                        log.error("Exception is Rising"+ e);
                                     }
                                 }
 
@@ -91,8 +91,6 @@ public class ComponentReportServlet extends SlingSafeMethodsServlet {
 
             response.getWriter().write(new ObjectMapper().writeValueAsString(list));
         }
-        else
-             log.error("Component resource is empty");
     }
 
 }
