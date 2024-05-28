@@ -1,0 +1,5 @@
+{
+  "scripts": [
+    "create service user shivam-system-user\nset ACL on /conf, /apps, /content, /var/workflow\nallow jcr:all for shivam-system-user\nend"
+  ]
+}

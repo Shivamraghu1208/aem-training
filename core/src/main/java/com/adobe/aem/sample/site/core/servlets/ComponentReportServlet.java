@@ -8,9 +8,12 @@ import com.day.cq.search.result.SearchResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +30,7 @@ import java.util.Map;
 @Component(service = Servlet.class, property =
         {
                 "sling.servlet.methods=GET",
-                "sling.servlet.paths=/bin/shivam/servlet",
+                "sling.servlet.resourceTypes=aemtraining/components/componentreport",
                 "sling.servlet.extensions=json"
         }
 
@@ -35,52 +38,52 @@ import java.util.Map;
 public class ComponentReportServlet extends SlingSafeMethodsServlet {
 
     private Logger log = LoggerFactory.getLogger("ComponentReportServlet");
-    private String componentResource;
     private List<String> list;
+
+    @Reference
+    private ResourceResolverFactory resourceResolverFactory;
+
 
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
-
         list = new ArrayList<>();
-        componentResource = request.getParameter("Path");
-
+        String componentResource = request.getParameter("Path");
         Map<String, String> predicateMap = new HashMap<>();
         predicateMap.put("path", "/content");
         predicateMap.put("type", "nt:unstructured");
         predicateMap.put("property", "sling:resourceType");
         predicateMap.put("property.value", componentResource);
         predicateMap.put("p.limit", "-1");
-
         PredicateGroup predicates = PredicateGroup.create(predicateMap);
-
-        ResourceResolver resourceResolver = request.getResourceResolver();
-        Session session = resourceResolver.adaptTo(Session.class);
-        if (session != null) {
-            QueryBuilder queryBuilder = resourceResolver.adaptTo(QueryBuilder.class);
-            if (queryBuilder != null) {
-                Query query = queryBuilder.createQuery(predicates, session);
-                if (query != null) {
-                    SearchResult result = query.getResult();
-                    List<Hit> hits = result.getHits();
-                    if (!hits.isEmpty()) {
-                        for (Hit hit : hits) {
-                            try {
-                                String path = hit.getPath();
-                                list.add(path);
-                                log.info(path);
-
-                            } catch (RepositoryException e) {
-
-
-                                e.printStackTrace();
+       final Map<String,Object> params=new HashMap<>();
+         params.put(ResourceResolverFactory.SUBSERVICE, "aem-training-content-reader");
+        try {
+            ResourceResolver resourceResolver = resourceResolverFactory.getServiceResourceResolver(params);
+            Session session = resourceResolver.adaptTo(Session.class);
+            if (session != null) {
+                QueryBuilder queryBuilder = resourceResolver.adaptTo(QueryBuilder.class);
+                if (queryBuilder != null) {
+                    Query query = queryBuilder.createQuery(predicates, session);
+                    if (query != null) {
+                        SearchResult result = query.getResult();
+                        List<Hit> hits = result.getHits();
+                        if (!hits.isEmpty()) {
+                            for (Hit hit : hits) {
+                                try { String path = hit.getPath();
+                                    list.add(path);
+                                } catch (RepositoryException e) {e.printStackTrace();
+                                }
                             }
+
                         }
 
                     }
-
                 }
             }
+        } catch (LoginException e) {
+            log.error("Exception is rising "+ e);
         }
+
         response.getWriter().write(new ObjectMapper().writeValueAsString(list));
     }
 }
