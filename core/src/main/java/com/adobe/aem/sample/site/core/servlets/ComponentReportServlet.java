@@ -6,6 +6,7 @@ import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
@@ -49,7 +50,7 @@ public class ComponentReportServlet extends SlingSafeMethodsServlet {
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
         list = new ArrayList<>();
         String componentResource = request.getParameter("Path");
-        if (componentResource!=null) {
+        if (StringUtils.isNotEmpty(componentResource)) {
             Map<String, String> predicateMap = new HashMap<>();
             predicateMap.put("path", "/content");
             predicateMap.put("type", "nt:unstructured");
@@ -90,6 +91,8 @@ public class ComponentReportServlet extends SlingSafeMethodsServlet {
             }
 
             response.getWriter().write(new ObjectMapper().writeValueAsString(list));
+        } else {
+            response.getWriter().write("No Resource Found");
         }
     }
 
