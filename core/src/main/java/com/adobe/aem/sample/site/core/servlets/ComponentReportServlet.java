@@ -12,6 +12,7 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.repoinit.parser.operations.DeleteServiceUser;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -48,42 +49,50 @@ public class ComponentReportServlet extends SlingSafeMethodsServlet {
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
         list = new ArrayList<>();
         String componentResource = request.getParameter("Path");
-        Map<String, String> predicateMap = new HashMap<>();
-        predicateMap.put("path", "/content");
-        predicateMap.put("type", "nt:unstructured");
-        predicateMap.put("property", "sling:resourceType");
-        predicateMap.put("property.value", componentResource);
-        predicateMap.put("p.limit", "-1");
-        PredicateGroup predicates = PredicateGroup.create(predicateMap);
-       final Map<String,Object> params=new HashMap<>();
-         params.put(ResourceResolverFactory.SUBSERVICE, "aem-training-content-reader");
-        try {
-            ResourceResolver resourceResolver = resourceResolverFactory.getServiceResourceResolver(params);
-            Session session = resourceResolver.adaptTo(Session.class);
-            if (session != null) {
-                QueryBuilder queryBuilder = resourceResolver.adaptTo(QueryBuilder.class);
-                if (queryBuilder != null) {
-                    Query query = queryBuilder.createQuery(predicates, session);
-                    if (query != null) {
-                        SearchResult result = query.getResult();
-                        List<Hit> hits = result.getHits();
-                        if (!hits.isEmpty()) {
-                            for (Hit hit : hits) {
-                                try { String path = hit.getPath();
-                                    list.add(path);
-                                } catch (RepositoryException e) {e.printStackTrace();
+        if (!componentResource.isEmpty()) {
+            Map<String, String> predicateMap = new HashMap<>();
+            predicateMap.put("path", "/content");
+            predicateMap.put("type", "nt:unstructured");
+            predicateMap.put("property", "sling:resourceType");
+            predicateMap.put("property.value", componentResource);
+            predicateMap.put("p.limit", "-1");
+            PredicateGroup predicates = PredicateGroup.create(predicateMap);
+            final Map<String, Object> params = new HashMap<>();
+            params.put(ResourceResolverFactory.SUBSERVICE, "aem-training-content-reader");
+            try {
+                ResourceResolver resourceResolver = resourceResolverFactory.getServiceResourceResolver(params);
+                Session session = resourceResolver.adaptTo(Session.class);
+                if (session != null) {
+                    QueryBuilder queryBuilder = resourceResolver.adaptTo(QueryBuilder.class);
+                    if (queryBuilder != null) {
+                        Query query = queryBuilder.createQuery(predicates, session);
+                        if (query != null) {
+                            SearchResult result = query.getResult();
+                            List<Hit> hits = result.getHits();
+                            if (!hits.isEmpty()) {
+                                for (Hit hit : hits) {
+                                    try {
+                                        String path = hit.getPath();
+                                        list.add(path);
+                                    } catch (RepositoryException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
+
                             }
 
                         }
 
                     }
                 }
+            } catch (LoginException e) {
+                log.error("Exception is rising " + e);
             }
-        } catch (LoginException e) {
-            log.error("Exception is rising "+ e);
-        }
 
-        response.getWriter().write(new ObjectMapper().writeValueAsString(list));
+            response.getWriter().write(new ObjectMapper().writeValueAsString(list));
+        }
+        else
+             log.error("Component resource is empty");
     }
+
 }

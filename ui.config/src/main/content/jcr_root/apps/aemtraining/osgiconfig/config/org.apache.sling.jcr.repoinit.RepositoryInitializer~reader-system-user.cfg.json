@@ -1,0 +1,5 @@
+{
+  "scripts": [
+    "create service user reader-system-user\nset ACL on /conf, /apps/aemtraining, /content, /var/workflow\nallow jcr:read for reader-system-user\nend"
+  ]
+}
