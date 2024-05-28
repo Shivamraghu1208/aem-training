@@ -1,0 +1,16 @@
+<sly data-sly-use.templates="core/wcm/components/commons/v1/templates.html"/>
+<sly data-sly-use.report="com.adobe.aem.sample.site.core.models.ComponentReportModel"/>
+
+
+<h1>${report.title}<h1>
+<select id="dropdown-value">
+    <option>${report.dropDownPlaceHolder}</option>
+    <sly data-sly-list.obj="${report.listOfPojo}">
+        <option value="${obj.path}">${obj.title}</option>
+
+    </sly>
+</select>
+<button>${report.buttonLabel}</button>
+
+<sly data-sly-call="${templates.placeholder @ isEmpty = true, classAppend='cmp-text'}"></sly>
+
