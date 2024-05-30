@@ -47,6 +47,7 @@ public class ComponentReportServlet extends SlingSafeMethodsServlet {
     private ResourceResolverFactory resourceResolverFactory;
 
 
+
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
         list = new ArrayList<>();

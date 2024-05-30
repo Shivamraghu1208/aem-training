@@ -5,16 +5,19 @@
 <div data-sly-test="${isAuthored}">
 
 
-<h1>${report.title}</h1>
-<select id="dropdown-value">
+<h1 class="heading">${report.title}</h1>
+<select class="select" id="dropdown-value">
     <option>${report.dropDownPlaceHolder}</option>
     <sly data-sly-list.obj="${report.listOfPojo}">
         <option value="${obj.path}">${obj.title}</option>
 
     </sly>
 </select>
-<button>${report.buttonLabel}</button>
+<button class="button" id="button">${report.buttonLabel}</button>
 </div>
 
+ <div id="response-container"></div>
+
 <sly data-sly-call="${templates.placeholder @ isEmpty =  !isAuthored, classAppend='cmp-text'}"></sly>
+
 
