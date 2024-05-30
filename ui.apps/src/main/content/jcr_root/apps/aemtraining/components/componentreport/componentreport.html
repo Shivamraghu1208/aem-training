@@ -17,5 +17,7 @@
 
 <div class="response-container"></div>
 
-<sly data-sly-call="${templates.placeholder @ isEmpty =  !isAuthored, classAppend='cmp-text'}"></sly>
+<div class="path-container"  data-path="${resource.path}"></div>
+
+    <sly data-sly-call="${templates.placeholder @ isEmpty =  !isAuthored, classAppend='cmp-text'}"></sly>
 
