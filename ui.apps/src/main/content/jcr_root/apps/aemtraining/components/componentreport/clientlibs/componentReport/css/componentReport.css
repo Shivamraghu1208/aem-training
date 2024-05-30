@@ -6,7 +6,7 @@
         padding: 20px;
     }
 
-    div[data-sly-test] {
+    .main {
         background: linear-gradient(135deg, #ff7e5f, #feb47b);
         padding: 20px;
         border-radius: 10px;
@@ -23,7 +23,7 @@
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
 
-    .select {
+    .dropdown-value {
         display: block;
         width: 100%;
         padding: 10px;
@@ -39,7 +39,7 @@
         transition: border-color 0.3s, box-shadow 0.3s;
     }
 
-    select:focus {
+    .dropdown-value:focus {
         border-color: #ff7e5f;
         box-shadow: 0 0 10px rgba(255, 126, 95, 0.5);
     }
@@ -56,18 +56,18 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
-    button:hover {
+    .button:hover {
         background: #feb47b;
         transform: translateY(-2px);
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
     }
 
-    button:active {
+    .button:active {
         background: #e57373;
         transform: translateY(0);
     }
 
-    #response-container {
+    .response-container {
         margin-top: 20px;
         padding: 20px;
         background: #fff;

@@ -1,23 +1,21 @@
+
 <sly data-sly-use.templates="core/wcm/components/commons/v1/templates.html"/>
 <sly data-sly-use.report="com.adobe.aem.sample.site.core.models.ComponentReportModel"/>
 <sly data-sly-test.isAuthored="${report.title}"/>
 
-<div data-sly-test="${isAuthored}">
+<div class="main" data-sly-test="${isAuthored}">
 
-
-<h1 class="heading">${report.title}</h1>
-<select class="select" id="dropdown-value">
-    <option>${report.dropDownPlaceHolder}</option>
-    <sly data-sly-list.obj="${report.listOfPojo}">
-        <option value="${obj.path}">${obj.title}</option>
-
-    </sly>
-</select>
-<button class="button" id="button">${report.buttonLabel}</button>
+    <h1 class="heading">${report.title}</h1>
+    <select class="dropdown-value">
+        <option>${report.dropDownPlaceHolder}</option>
+        <sly data-sly-list.obj="${report.listOfPojo}">
+            <option value="${obj.path}">${obj.title}</option>
+        </sly>
+    </select>
+    <button class="button">${report.buttonLabel}</button>
 </div>
 
- <div id="response-container"></div>
+<div class="response-container"></div>
 
 <sly data-sly-call="${templates.placeholder @ isEmpty =  !isAuthored, classAppend='cmp-text'}"></sly>
-
 

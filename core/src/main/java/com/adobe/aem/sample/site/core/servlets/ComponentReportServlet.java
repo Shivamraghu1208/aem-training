@@ -40,7 +40,7 @@ import java.util.Map;
 )
 public class ComponentReportServlet extends SlingSafeMethodsServlet {
 
-    private Logger log = LoggerFactory.getLogger("ComponentReportServlet");
+    private Logger log = LoggerFactory.getLogger(ComponentReportServlet.class);
     private List<String> list;
 
     @Reference
