@@ -11,7 +11,7 @@
 		let componentResourcePath= componentReport[i].querySelector(".path-container").dataset.path;
 		let apiUrl = componentResourcePath+".json?Path="+value;
         let currentIndex = componentReport[i];
-      console.log("apiUrl : "+apiUrl);
+
 		$.ajax({
           method: 'get',
           url: apiUrl,
