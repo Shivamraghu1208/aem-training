@@ -4,7 +4,6 @@
   var componentReport = document.querySelectorAll(".componentreport")
   for(let i=0;i<componentReport.length;i++){
   componentReport[i].querySelector('.button').addEventListener('click', function() {
-  console.log("button clicked");
 		let value = componentReport[i].querySelector('.dropdown-value').value;
         if(value!=null)
         {
