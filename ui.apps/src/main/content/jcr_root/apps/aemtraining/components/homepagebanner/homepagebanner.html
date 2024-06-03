@@ -1,0 +1,23 @@
+<sly data-sly-use.templates="core/wcm/components/commons/v1/templates.html"/>
+<sly data-sly-use.obj="com.adobe.aem.sample.site.core.models.HomePageBannerModel"/>
+<sly data-sly-test.isAuthored="${obj.title}"></sly>
+
+<div data-sly-test="${obj.isPublishMode}">
+
+    <div class="con" data-sly-test="${isAuthored}">
+        <div class="data">
+            <h1 class="header">${obj.title}</h1>
+            <h2>${obj.description}</h2>
+            <a href=" ${obj.buttonLinkTo}.html" target="_blank">
+                <button>${obj.buttonLabel}</button>
+            </a>
+        </div>
+        <div class="img">
+            <img src="${obj.fileReference}">
+        </div>
+
+    </div>
+</div>
+
+
+<sly data-sly-call="${templates.placeholder @ isEmpty = true, classAppend='cmp-text'}"></sly>
