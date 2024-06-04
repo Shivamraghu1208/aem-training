@@ -3,4 +3,4 @@
     jcr:primaryType="cq:ClientLibraryFolder"
     allowProxy="{Boolean}true"
     categories="HomePageLibs"
-    dependencies="aemtraining.jquery.clientlibs"/>
+/>
