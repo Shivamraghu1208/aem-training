@@ -7,6 +7,6 @@ import java.util.Map;
 public interface TokenDetailService {
 
     Map<String,String> getTokenDetails(String token);
-    public void storeTokenDetails(String token, String name,String email);
-    public String getResourcePath();
+    void storeTokenDetails(String token, String name,String email);
+    String getResourcePath();
 }

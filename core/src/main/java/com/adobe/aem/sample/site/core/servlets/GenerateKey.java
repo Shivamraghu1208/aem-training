@@ -57,8 +57,7 @@ public class GenerateKey extends SlingSafeMethodsServlet {
                     log.error("Json Exception {}", e);
                 }
                 ValueMap valueMap = resource.getValueMap();
-                String tokenStatus = checkForTokenInNode(email, resource, valueMap, resourceResolver, jsonObject, response, uniqueToken, name);
-                responseObj = tokenStatus;
+                responseObj = checkForTokenInNode(email, resource, valueMap, resourceResolver, jsonObject, response, uniqueToken, name);
             }
 
         } else if (token != null) {
