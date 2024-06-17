@@ -1,6 +1,6 @@
 package com.adobe.aem.sample.site.core.servlets;
 
-import com.adobe.aem.sample.site.core.services.FindDetailService;
+import com.adobe.aem.sample.site.core.services.TokenDetailService;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.ModifiableValueMap;
@@ -31,16 +31,16 @@ import java.util.UUID;
 public class GenerateKey extends SlingSafeMethodsServlet {
 
     @Reference
-    private transient FindDetailService findDetailService;
+    private transient TokenDetailService tokenDetailService;
 
     private Logger log = LoggerFactory.getLogger(ComponentReportServlet.class);
 
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
-
+        String responseObj = "";
         String name = request.getParameter("name");
         String email = request.getParameter("email");
-        String path = findDetailService.getPath();
+        String path = tokenDetailService.getResourcePath();
         String token = request.getParameter("token");
 
         if (name != null && email != null) {
@@ -57,33 +57,33 @@ public class GenerateKey extends SlingSafeMethodsServlet {
                     log.error("Json Exception {}", e);
                 }
                 ValueMap valueMap = resource.getValueMap();
-                boolean isPresent = checkForTokenInNode(email, resource, valueMap, resourceResolver, jsonObject,response,uniqueToken,name);
-                if(isPresent) {
-                    String tokenPresent = valueMap.get(email, "");
-                    response.getWriter().write("already Token present: " + tokenPresent); }
+                String tokenStatus = checkForTokenInNode(email, resource, valueMap, resourceResolver, jsonObject, response, uniqueToken, name);
+                responseObj = tokenStatus;
             }
+
         } else if (token != null) {
-            Map<String, String> stringValueMap = findDetailService.getData(token);
+            Map<String, String> stringValueMap = tokenDetailService.getTokenDetails(token);
             if (stringValueMap != null && !stringValueMap.isEmpty()) {
                 String name1 = stringValueMap.get("name");
                 String email1 = stringValueMap.get("email");
-                response.getWriter().write("Name:  " + name1 + " Email:  " + email1);
-            }
-            else {
-                response.getWriter().write("Invalid Token");
+                responseObj = "Name:  " + name1 + " Email:  " + email1;
+            } else {
+                responseObj = "Invalid Token";
             }
         }
+        response.getWriter().write(responseObj);
     }
 
-    private synchronized boolean checkForTokenInNode(String email, Resource resource, ValueMap valueMap, ResourceResolver resourceResolver, JSONObject jsonObject, SlingHttpServletResponse response,String token,String name) throws IOException {
-           boolean isPresent=true;
+    private synchronized String checkForTokenInNode(String email, Resource resource, ValueMap valueMap, ResourceResolver resourceResolver, JSONObject jsonObject, SlingHttpServletResponse response, String token, String name) throws IOException {
         if (!valueMap.containsKey(email)) {
             resource.adaptTo(ModifiableValueMap.class).put(email, jsonObject.toString());
             resourceResolver.commit();
-            findDetailService.addData(token,name,email);
-            response.getWriter().write("New Token: " + token);
-            isPresent=false;
+            tokenDetailService.storeTokenDetails(token, name, email);
+            return "New Token : " + token;
+        } else {
+            String existingToken = valueMap.get(email, " ");
+            return "Already present : " + existingToken.toString();
         }
-        return isPresent;
+
     }
 }

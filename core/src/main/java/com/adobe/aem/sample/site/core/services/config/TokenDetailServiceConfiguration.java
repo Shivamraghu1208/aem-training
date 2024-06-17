@@ -4,7 +4,7 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @ObjectClassDefinition(name = "Detail Service Configuration ")
-public @interface FindDetailServiceConfiguration {
+public @interface TokenDetailServiceConfiguration {
 
     @AttributeDefinition(name = "Path")
     String path();

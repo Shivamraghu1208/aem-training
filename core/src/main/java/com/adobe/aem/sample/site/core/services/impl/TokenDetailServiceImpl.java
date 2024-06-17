@@ -1,10 +1,11 @@
 package com.adobe.aem.sample.site.core.services.impl;
 
-import com.adobe.aem.sample.site.core.services.FindDetailService;
-import com.adobe.aem.sample.site.core.services.config.FindDetailServiceConfiguration;
+import com.adobe.aem.sample.site.core.services.TokenDetailService;
+import com.adobe.aem.sample.site.core.services.config.TokenDetailServiceConfiguration;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -20,23 +21,23 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component(service = FindDetailService.class, immediate = true)
-@Designate(ocd= FindDetailServiceConfiguration.class)
-public class FindDetailServiceImpl implements FindDetailService {
+@Component(service = TokenDetailService.class, immediate = true)
+@Designate(ocd = TokenDetailServiceConfiguration.class)
+public class TokenDetailServiceImpl implements TokenDetailService {
 
     @Reference
     private ResourceResolverFactory resourceResolverFactory;
 
 
-   String path;
-   private Logger logger = LoggerFactory.getLogger(FindDetailServiceImpl.class);
-   private Map<String,Map<String,String>> tokenDetailsMap=new HashMap<>();
-   private Map<String,String> nameEmailDetailsMap=new HashMap<>();
+    private String path;
+    private Logger logger = LoggerFactory.getLogger(TokenDetailServiceImpl.class);
+    private Map<String, Map<String, String>> tokenDetailsMap = new HashMap<>();
+    private Map<String, String> nameEmailDetailsMap = new HashMap<>();
 
     @Activate
     @Modified
-    protected void activate(FindDetailServiceConfiguration configuration) {
-        path=configuration.path();
+    protected void activate(TokenDetailServiceConfiguration configuration) {
+        path = configuration.path();
         final Map<String, Object> params = new HashMap<>();
         params.put(ResourceResolverFactory.SUBSERVICE, "aem-training-content-reader");
         try {
@@ -46,17 +47,16 @@ public class FindDetailServiceImpl implements FindDetailService {
                 ValueMap valueMap = resource.getValueMap();
                 if (valueMap != null) {
                     valueMap.forEach((key, value) -> {
-                        if(!key.equals("jcr:primaryType"))
-                        {
+                        if (!key.equals("jcr:primaryType")) {
                             String jsonString = new Gson().toJson(value);
-                            if(JsonParser.parseString(JsonParser.parseString(jsonString).getAsString()).isJsonObject()){
+                            if (JsonParser.parseString(JsonParser.parseString(jsonString).getAsString()).isJsonObject()) {
                                 JsonObject jsonObject = JsonParser.parseString(JsonParser.parseString(jsonString).getAsString()).getAsJsonObject();
                                 String name = jsonObject.get("name").getAsString();
                                 String email = jsonObject.get("email").getAsString();
                                 String token = jsonObject.get("token").getAsString();
-                                nameEmailDetailsMap.put("name",name);
-                                nameEmailDetailsMap.put("email",email);
-                                tokenDetailsMap.put(token,nameEmailDetailsMap);
+                                nameEmailDetailsMap.put("name", name);
+                                nameEmailDetailsMap.put("email", email);
+                                tokenDetailsMap.put(token, nameEmailDetailsMap);
 
                             }
                         }
@@ -64,23 +64,24 @@ public class FindDetailServiceImpl implements FindDetailService {
                     });
                 }
             }
-        } catch (Exception e) {
-            logger.error("Login Exception {}",e);
+        } catch (LoginException e) {
+            logger.error("Login Exception {}", e);
         }
     }
-    public void addData(String token, String name,String email)
-    {       nameEmailDetailsMap.put("name",name);
-            nameEmailDetailsMap.put("email",email);
-            tokenDetailsMap.put(token,nameEmailDetailsMap);
+
+    public void storeTokenDetails(String token, String name, String email) {
+        nameEmailDetailsMap.put("name", name);
+        nameEmailDetailsMap.put("email", email);
+        tokenDetailsMap.put(token, nameEmailDetailsMap);
     }
 
     @Override
-    public String getPath() {
+    public String getResourcePath() {
         return path;
     }
 
     @Override
-    public Map<String,String> getData(String token){
+    public Map<String, String> getTokenDetails(String token) {
         return tokenDetailsMap.get(token);
     }
 }
