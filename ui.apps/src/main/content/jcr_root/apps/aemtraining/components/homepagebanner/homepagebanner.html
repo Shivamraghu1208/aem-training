@@ -1,20 +1,23 @@
 <sly data-sly-use.templates="core/wcm/components/commons/v1/templates.html"/>
 <sly data-sly-use.homePageBannerModel="com.adobe.aem.sample.site.core.models.HomePageBannerModel"/>
-<div data-sly-test="${homePageBannerModel.isPublishMode}">
+<sly data-sly-test.isAuthored="${homePageBannerModel.buttonLabel}"/>
+<sly data-sly-test="${homePageBannerModel.isPublishMode}">
     <div class="home-page-container">
         <div class="home-page-content-container">
             <h1 class="header">${homePageBannerModel.title}</h1>
             <h2>${homePageBannerModel.description @context='html'}</h2>
-            <a href=" ${homePageBannerModel.buttonLinkTo}.html" target="_blank">
-                <button>${homePageBannerModel.buttonLabel}</button>
-            </a>
+            <div data-sly-test="${isAuthored}">
+                <a href=" ${homePageBannerModel.buttonLinkTo}" target="_blank">
+                    <button>${homePageBannerModel.buttonLabel}</button>
+                </a>
+            </div>
         </div>
         <div class="home-page-image-container">
             <img src="${homePageBannerModel.fileReference}">
         </div>
 
     </div>
-</div>
+</sly>
 
 
 <sly data-sly-call="${templates.placeholder @ isEmpty = true, classAppend='cmp-text'}"></sly>

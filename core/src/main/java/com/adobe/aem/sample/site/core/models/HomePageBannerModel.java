@@ -2,33 +2,39 @@ package com.adobe.aem.sample.site.core.models;
 
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.WCMMode;
-import javax.annotation.PostConstruct;
-import javax.servlet.ServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.models.annotations.Default;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.ScriptVariable;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.ServletRequest;
+
 @Model(adaptables = {Resource.class, SlingHttpServletRequest.class}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class HomePageBannerModel {
     @ValueMapValue
+    @Default(values = "")
     private String buttonLabel;
 
     @ValueMapValue
+    @Default(values = "")
     private String buttonLinkTo;
 
     @ValueMapValue
+    @Default(values = "")
     private String description;
 
     @ValueMapValue
+    @Default(values = "")
     private String title;
 
     @ValueMapValue
+    @Default(values = "")
     private String fileReference;
 
 
@@ -42,31 +48,29 @@ public class HomePageBannerModel {
     private Resource resource;
 
 
-
     private boolean isPublishMode;
 
     @PostConstruct
     protected void init() {
-        if (this.title == null) {
-           String path = this.currentPage.getPath();
-              path = path.concat("/jcr:content");
-            if (this.resource != null) {
-                ResourceResolver resourceResolver = this.resource.getResourceResolver();
-                Resource pageResource = resourceResolver.getResource(path);
-                if (pageResource != null) {
-                    ValueMap valueMap = pageResource.getValueMap();
-                    this.title = (String)valueMap.get("jcr:title", "");
-                }
-            }
+
+        if (title.isEmpty() || title == null) {
+            title = currentPage.getTitle();
         }
-        if (fileReference==null) {
+        if (!buttonLinkTo.isEmpty() && buttonLinkTo.contains("/content")) {
+            if (!buttonLinkTo.contains(".html")) {
+                buttonLinkTo = buttonLinkTo + ".html";
+            }
+        } else {
+            buttonLinkTo = "#";
+        }
+        if (StringUtils.isBlank(fileReference)) {
             Resource image = resource.getChild("image");
-            if(image !=null) {
+            if (image != null) {
                 fileReference = image.getPath();
             }
         }
 
-        WCMMode wcmMode = WCMMode.fromRequest((ServletRequest)this.request);
+        WCMMode wcmMode = WCMMode.fromRequest((ServletRequest) this.request);
         if (wcmMode != null)
             this.isPublishMode = (wcmMode == WCMMode.DISABLED);
 
@@ -77,7 +81,7 @@ public class HomePageBannerModel {
     }
 
     public String getButtonLinkTo() {
-        return this.buttonLinkTo;
+        return buttonLinkTo;
     }
 
     public String getDescription() {
