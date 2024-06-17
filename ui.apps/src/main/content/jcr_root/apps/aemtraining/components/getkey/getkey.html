@@ -1,0 +1,16 @@
+<sly data-sly-use.templates="core/wcm/components/commons/v1/templates.html"/>
+        <div>
+            <label>Name:</label>
+            <input type="text" id="name"  required>
+        </div>
+        <div>
+            <label>Email:</label>
+            <input type="email" id="email" required>
+        </div>
+        <div>
+            <button class="submit-button" type="submit">Submit</button>
+        </div>
+<div class="response-token-container" id="${resource.path.hashCode}"></div>
+      <div class="get-path"  data-path="${resource.path}"></div>
+
+<sly data-sly-call="${templates.placeholder @ isEmpty = true, classAppend='cmp-text'}"></sly>

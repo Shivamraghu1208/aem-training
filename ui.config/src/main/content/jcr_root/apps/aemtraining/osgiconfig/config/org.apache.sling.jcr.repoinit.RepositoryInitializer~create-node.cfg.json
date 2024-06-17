@@ -1,0 +1,5 @@
+{
+  "scripts": [
+    "create path (nt:unstructured) /etc/myvalues"
+  ]
+}
