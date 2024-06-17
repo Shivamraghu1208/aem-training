@@ -2,9 +2,13 @@ package com.adobe.aem.sample.site.core.services.impl;
 
 import com.adobe.aem.sample.site.core.services.FindDetailService;
 import com.adobe.aem.sample.site.core.services.config.FindDetailServiceConfiguration;
-import com.adobe.aem.sample.site.core.services.config.ProductDetailServiceConfiguration;
-import com.google.gson.*;
-import org.apache.sling.api.resource.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -26,8 +30,8 @@ public class FindDetailServiceImpl implements FindDetailService {
 
    String path;
    private Logger logger = LoggerFactory.getLogger(FindDetailServiceImpl.class);
-   private Map<String,Map<String,String>> tokenMap=new HashMap<>();
-   private Map<String,String> nameEmailMap=new HashMap<>();
+   private Map<String,Map<String,String>> tokenDetailsMap=new HashMap<>();
+   private Map<String,String> nameEmailDetailsMap=new HashMap<>();
 
     @Activate
     @Modified
@@ -50,9 +54,9 @@ public class FindDetailServiceImpl implements FindDetailService {
                                 String name = jsonObject.get("name").getAsString();
                                 String email = jsonObject.get("email").getAsString();
                                 String token = jsonObject.get("token").getAsString();
-                                nameEmailMap.put("name",name);
-                                nameEmailMap.put("email",email);
-                                tokenMap.put(token,nameEmailMap);
+                                nameEmailDetailsMap.put("name",name);
+                                nameEmailDetailsMap.put("email",email);
+                                tokenDetailsMap.put(token,nameEmailDetailsMap);
 
                             }
                         }
@@ -60,14 +64,14 @@ public class FindDetailServiceImpl implements FindDetailService {
                     });
                 }
             }
-        } catch (LoginException e) {
+        } catch (Exception e) {
             logger.error("Login Exception {}",e);
         }
     }
     public void addData(String token, String name,String email)
-    {       nameEmailMap.put("name",name);
-            nameEmailMap.put("email",email);
-            tokenMap.put(token,nameEmailMap);
+    {       nameEmailDetailsMap.put("name",name);
+            nameEmailDetailsMap.put("email",email);
+            tokenDetailsMap.put(token,nameEmailDetailsMap);
     }
 
     @Override
@@ -77,6 +81,6 @@ public class FindDetailServiceImpl implements FindDetailService {
 
     @Override
     public Map<String,String> getData(String token){
-        return tokenMap.get(token);
+        return tokenDetailsMap.get(token);
     }
 }
