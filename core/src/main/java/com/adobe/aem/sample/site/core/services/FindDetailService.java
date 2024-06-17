@@ -6,6 +6,7 @@ import java.util.Map;
 
 public interface FindDetailService {
 
-    Map<String,String> getMapOfToken(String token);
+    Map<String,String> getData(String token);
     public void addData(String token, String name,String email);
+    public String getPath();
 }

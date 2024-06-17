@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.jsoup.helper.HttpConnection;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class GenerateKey extends SlingSafeMethodsServlet {
 
         String name = request.getParameter("name");
         String email = request.getParameter("email");
-        String path = "/etc/myvalues";
+        String path = findDetailService.getPath();
         String token = request.getParameter("token");
 
         if (name != null && email != null) {
@@ -61,7 +62,7 @@ public class GenerateKey extends SlingSafeMethodsServlet {
                     response.getWriter().write("already Token present: " + tokenPresent); }
             }
         } else if (token != null) {
-            Map<String, String> stringValueMap = findDetailService.getMapOfToken(token);
+            Map<String, String> stringValueMap = findDetailService.getData(token);
             if (stringValueMap != null && !stringValueMap.isEmpty()) {
                 String name1 = stringValueMap.get("name");
                 String email1 = stringValueMap.get("email");

@@ -4,7 +4,6 @@
         const componentResourcePath= document.querySelector(".get-path").dataset.path;
         let apiUrl=componentResourcePath+".key.json";
         let id=document.querySelector(".response-token-container").getAttribute("id");
- console.log('apiUrl:', apiUrl);
 
         $.ajax({
                   method: 'get',

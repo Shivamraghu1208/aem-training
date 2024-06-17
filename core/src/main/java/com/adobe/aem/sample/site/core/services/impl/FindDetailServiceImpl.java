@@ -1,14 +1,15 @@
 package com.adobe.aem.sample.site.core.services.impl;
 
 import com.adobe.aem.sample.site.core.services.FindDetailService;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.adobe.aem.sample.site.core.services.config.FindDetailServiceConfiguration;
+import com.adobe.aem.sample.site.core.services.config.ProductDetailServiceConfiguration;
+import com.google.gson.*;
 import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,23 +17,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component(service = FindDetailService.class, immediate = true)
+@Designate(ocd= FindDetailServiceConfiguration.class)
 public class FindDetailServiceImpl implements FindDetailService {
 
     @Reference
     private ResourceResolverFactory resourceResolverFactory;
 
+
+   String path;
    private Logger logger = LoggerFactory.getLogger(FindDetailServiceImpl.class);
-   private Map<String,Map<String,String>> mapOfToken=new HashMap<>();
-   private Map<String,String> mapOfNameAndEmail=new HashMap<>();
+   private Map<String,Map<String,String>> tokenMap=new HashMap<>();
+   private Map<String,String> nameEmailMap=new HashMap<>();
 
     @Activate
     @Modified
-    protected void activate() {
+    protected void activate(FindDetailServiceConfiguration configuration) {
+        path=configuration.path();
         final Map<String, Object> params = new HashMap<>();
         params.put(ResourceResolverFactory.SUBSERVICE, "aem-training-content-reader");
         try {
             ResourceResolver resourceResolver = resourceResolverFactory.getServiceResourceResolver(params);
-            Resource resource = resourceResolver.getResource("/etc/myvalues");
+            Resource resource = resourceResolver.getResource(path);
             if (resource != null) {
                 ValueMap valueMap = resource.getValueMap();
                 if (valueMap != null) {
@@ -45,9 +50,9 @@ public class FindDetailServiceImpl implements FindDetailService {
                                 String name = jsonObject.get("name").getAsString();
                                 String email = jsonObject.get("email").getAsString();
                                 String token = jsonObject.get("token").getAsString();
-                                mapOfNameAndEmail.put("name",name);
-                                mapOfNameAndEmail.put("email",email);
-                                mapOfToken.put(token,mapOfNameAndEmail);
+                                nameEmailMap.put("name",name);
+                                nameEmailMap.put("email",email);
+                                tokenMap.put(token,nameEmailMap);
 
                             }
                         }
@@ -60,13 +65,18 @@ public class FindDetailServiceImpl implements FindDetailService {
         }
     }
     public void addData(String token, String name,String email)
-    {       mapOfNameAndEmail.put("name",name);
-            mapOfNameAndEmail.put("email",email);
-            mapOfToken.put(token,mapOfNameAndEmail);
+    {       nameEmailMap.put("name",name);
+            nameEmailMap.put("email",email);
+            tokenMap.put(token,nameEmailMap);
     }
 
     @Override
-    public Map<String,String> getMapOfToken(String token){
-        return mapOfToken.get(token);
+    public String getPath() {
+        return path;
+    }
+
+    @Override
+    public Map<String,String> getData(String token){
+        return tokenMap.get(token);
     }
 }

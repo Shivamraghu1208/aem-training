@@ -1,7 +1,7 @@
 document.querySelector('.submit-button-val').addEventListener('click',function() {
 const token = document.getElementById('token').value;
 const id= document.querySelector(".response-value-container").getAttribute("id");
- const apiUrl="http://localhost:4502/bin/getToken.key.json";
+ const apiUrl="/bin/getToken.key.json";
 
    $.ajax({
                    method: 'get',
