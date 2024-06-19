@@ -1,0 +1,4 @@
+{
+  "scheduler.name": "Demo- Scheduler123",
+  "scheduler.expression": "0 0/1 * 1/1 * ? *"
+}
