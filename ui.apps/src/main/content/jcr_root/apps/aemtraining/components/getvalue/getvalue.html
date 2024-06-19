@@ -1,0 +1,11 @@
+<sly data-sly-use.templates="core/wcm/components/commons/v1/templates.html"/>
+
+
+<div>
+    <label>Enter Token:</label>
+    <input type="text" id="token" required>
+
+    <button class="submit-button-val" type="submit">Submit</button>
+</div>
+<div class="response-value-container" id="${resource.path.hashCode}"></div>
+<sly data-sly-call="${templates.placeholder @ isEmpty = true, classAppend='cmp-text'}"></sly>
