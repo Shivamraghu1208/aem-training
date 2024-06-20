@@ -14,4 +14,7 @@ public @interface PageUnpublishSchedulerConfiguration {
 
     @AttributeDefinition(name = "cron name")
     public String scheduler_expression();
+
+    @AttributeDefinition(name = "ApiUrl")
+    public String api_url();
 }

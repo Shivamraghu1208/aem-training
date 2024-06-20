@@ -17,7 +17,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.commons.scheduler.Scheduler;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -46,8 +45,7 @@ public class PageUnpublishScheduler implements Runnable {
 
     private Logger log = LoggerFactory.getLogger(PageUnpublishScheduler.class);
 
-    @Reference
-    private Scheduler scheduler;
+    private static final String AEM_TRAINING_CONTENT_READER = "aem-training-content-reader";
 
     @Reference
     private ResourceResolverFactory resourceResolverFactory;
@@ -55,76 +53,67 @@ public class PageUnpublishScheduler implements Runnable {
     @Reference
     protected Replicator replicator;
 
+    private String apiUrl;
+
     @Activate
     protected void activate(PageUnpublishSchedulerConfiguration config) {
-
-        log.info("\n  Demooo  Scheduler Activated");
+        apiUrl=config.api_url();
+        log.debug("Scheduler Activated ");
     }
 
     @Override
     public void run() {
-        String apiUrl = "http://localhost:4502/bin/getCarCodes";
-        JsonObject asJsonObject = fetchApiResponse(apiUrl);
-        if(asJsonObject!=null)
-        {
-            List<String> listOfPageResource = buildAndExecuteQuery(asJsonObject);
-            if(listOfPageResource!=null) {
-                unPublishPage(listOfPageResource);
+        JsonObject jsonResponse = fetchApiResponse(apiUrl);
+        if (jsonResponse != null) {
+            List<String> listOfPagePath = getPagePathList(jsonResponse);
+            if (listOfPagePath != null) {
+                unPublishPage(listOfPagePath);
             }
 
         }
 
+        log.debug("\nRun From Demo Method running");
+    }
+    private void unPublishPage(List<String> listOfPagePath) {
+        ResourceResolver resourceResolver = getResourceResolver();
+        if (resourceResolver != null) {
+            for (String pageResource : listOfPagePath) {
+                try {
+                    replicator.replicate(getSession(resourceResolver), ReplicationActionType.DEACTIVATE, pageResource);
+                    log.debug("\nPATH OF PAGES WHERE EXPIRE CODE IS PRESENT" + pageResource);
+                } catch (ReplicationException e) {
+                    log.error("ReplicationException {} {}", e, e.getMessage());
+                }
 
-        log.info("\n ==========================Run From Demo Method running=======================");
+            }
+
+        }
 
     }
-
-    private void unPublishPage(List<String> listOfPageResource) {
-
-
-
-                    ResourceResolver resourceResolver = getResourceResolver();
-                    if (resourceResolver != null) {
-                        for (String pageResource:listOfPageResource) {
-                            try {
-                                replicator.replicate(getSession(resourceResolver), ReplicationActionType.DEACTIVATE, pageResource);
-                                log.info("\n ==========================PATH OF PAGES WHERE EXPIRE CODE IS PRESENT =======================" + pageResource);
-                            } catch (ReplicationException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-
-                    }
-
-
-    }
-
-    private List<String> buildAndExecuteQuery(JsonObject asJsonObject) {
-
-        List<String> listOfPageResource=new ArrayList<>();
+     private List<String> getPagePathList(JsonObject jsonResponse) {
+        List<String> listOfPagePath = new ArrayList<>();
         Map<String, String> predicateMap = new HashMap<>();
         predicateMap.put("path", "/content/aemtraining");
         predicateMap.put("type", "cq:PageContent");
         predicateMap.put("property.operation", "equals");
         predicateMap.put("property", "carcodes");
         predicateMap.put("p.limit", "-1");
-        if (!asJsonObject.isJsonNull() && !asJsonObject.get("responseCodes").isJsonNull()) {
-            JsonArray asJsonArray = asJsonObject.getAsJsonArray("responseCodes");
+        if (!jsonResponse.isJsonNull() && !jsonResponse.get("responseCodes").isJsonNull()) {
+            JsonArray asJsonArray = jsonResponse.getAsJsonArray("responseCodes");
             int temp = 1;
             if (asJsonArray != null) {
                 for (int i = 0; i < asJsonArray.size(); i++) {
                     JsonElement jsonElement = asJsonArray.get(i);
                     String code = jsonElement.getAsString();
                     predicateMap.put("property." + temp++ + "_value", code);
-                    log.info("\n ==========================Code Present =======================" + code);
+                    log.debug("\nCode Present" + code);
                 }
             }
         }
         PredicateGroup predicates = PredicateGroup.create(predicateMap);
         ResourceResolver resourceResolver = getResourceResolver();
         if (resourceResolver != null) {
-            Session session=getSession(resourceResolver);
+            Session session = getSession(resourceResolver);
             if (session != null) {
                 QueryBuilder queryBuilder = resourceResolver.adaptTo(QueryBuilder.class);
                 if (queryBuilder != null) {
@@ -137,60 +126,59 @@ public class PageUnpublishScheduler implements Runnable {
                                 try {
                                     String path = hit.getPath();
                                     path = path.replace("/jcr:content", "");
-                                    listOfPageResource.add(path);
-                                } catch (RepositoryException repositoryException) {
-                                    repositoryException.printStackTrace();
+                                    listOfPagePath.add(path);
+                                } catch (RepositoryException e) {
+                                    log.error("RepositoryException {} {}", e, e.getMessage());
                                 }
                             }
-                            return listOfPageResource;
+                            return listOfPagePath;
                         }
                     }
                 }
 
-                }
             }
-        return null;
         }
+        return listOfPagePath;
+    }
 
     private Session getSession(ResourceResolver resourceResolver) {
         return resourceResolver.adaptTo(Session.class);
     }
 
-    private ResourceResolver getResourceResolver () {
+    private ResourceResolver getResourceResolver() {
 
-            final Map<String, Object> params = new HashMap<>();
-            params.put(ResourceResolverFactory.SUBSERVICE, "aem-training-content-reader");
-            try {
-                ResourceResolver resourceResolver = resourceResolverFactory.getServiceResourceResolver(params);
-                return resourceResolver;
-            } catch (LoginException e) {
-                log.error("Login Exception : {}",e);
-            }
-            return null;
+        final Map<String, Object> params = new HashMap<>();
+        params.put(ResourceResolverFactory.SUBSERVICE, AEM_TRAINING_CONTENT_READER);
+        try {
+            ResourceResolver resourceResolver = resourceResolverFactory.getServiceResourceResolver(params);
+            return resourceResolver;
+        } catch (LoginException e) {
+            log.error("Login Exception : {} {}", e, e.getMessage());
         }
-
-
-        private JsonObject fetchApiResponse (String apiUrl){
-            String username = "admin";
-            String password = "admin";
-
-            try {
-                URL url = new URL(apiUrl);
-                URLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestProperty("accept", "application/json");
-                connection.setRequestProperty("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes()));
-                InputStream inputStream = connection.getInputStream();
-                String response = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-                JsonObject asJsonObject = JsonParser.parseString(response).getAsJsonObject();
-                return asJsonObject;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
+        return null;
     }
+
+    private JsonObject fetchApiResponse(String apiUrl) {
+        String username = "admin";
+        String password = "admin";
+
+        try {
+            URL url = new URL(apiUrl);
+            URLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("accept", "application/json");
+            connection.setRequestProperty("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes()));
+            InputStream inputStream = connection.getInputStream();
+            String response = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
+            return jsonResponse;
+        } catch (MalformedURLException e) {
+            log.error("MalformedURLException {} {}", e, e.getMessage());
+        } catch (IOException e) {
+            log.error("IOException {} {}", e, e.getMessage());
+        }
+        return null;
+    }
+}
 
 
 
