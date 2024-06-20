@@ -1,6 +1,8 @@
 package com.adobe.aem.sample.site.core.schedulers;
 
 import com.adobe.aem.sample.site.core.services.config.PageUnpublishSchedulerConfiguration;
+import com.adobe.granite.crypto.CryptoException;
+import com.adobe.granite.crypto.CryptoSupport;
 import com.day.cq.replication.ReplicationActionType;
 import com.day.cq.replication.ReplicationException;
 import com.day.cq.replication.Replicator;
@@ -46,9 +48,14 @@ public class PageUnpublishScheduler implements Runnable {
     private Logger log = LoggerFactory.getLogger(PageUnpublishScheduler.class);
 
     private static final String AEM_TRAINING_CONTENT_READER = "aem-training-content-reader";
+    private static final String ENCRYPTED_USER_NAME = "{bf369c8b28cee021f9f00e23b2ca9321bc279b60e408df065fc6a820d12f90f8}";
+    private static final String ENCRYPTED_USER_PASSWORD = "{bf369c8b28cee021f9f00e23b2ca9321bc279b60e408df065fc6a820d12f90f8}";
 
     @Reference
     private ResourceResolverFactory resourceResolverFactory;
+
+    @Reference
+    CryptoSupport cryptoSupport;
 
     @Reference
     protected Replicator replicator;
@@ -58,21 +65,20 @@ public class PageUnpublishScheduler implements Runnable {
     @Activate
     protected void activate(PageUnpublishSchedulerConfiguration config) {
         apiUrl=config.api_url();
-        log.debug("Scheduler Activated ");
+        log.debug("Unpublished page Scheduler Activated ");
     }
 
     @Override
     public void run() {
+        log.debug("Run Method Started");
         JsonObject jsonResponse = fetchApiResponse(apiUrl);
         if (jsonResponse != null) {
             List<String> listOfPagePath = getPagePathList(jsonResponse);
             if (listOfPagePath != null) {
                 unPublishPage(listOfPagePath);
             }
-
         }
-
-        log.debug("\nRun From Demo Method running");
+        log.debug("End of run Method");
     }
     private void unPublishPage(List<String> listOfPagePath) {
         ResourceResolver resourceResolver = getResourceResolver();
@@ -80,7 +86,7 @@ public class PageUnpublishScheduler implements Runnable {
             for (String pageResource : listOfPagePath) {
                 try {
                     replicator.replicate(getSession(resourceResolver), ReplicationActionType.DEACTIVATE, pageResource);
-                    log.debug("\nPATH OF PAGES WHERE EXPIRE CODE IS PRESENT" + pageResource);
+                    log.debug("PATH OF PAGES WHERE EXPIRE CODE IS PRESENT" + pageResource);
                 } catch (ReplicationException e) {
                     log.error("ReplicationException {} {}", e, e.getMessage());
                 }
@@ -106,7 +112,7 @@ public class PageUnpublishScheduler implements Runnable {
                     JsonElement jsonElement = asJsonArray.get(i);
                     String code = jsonElement.getAsString();
                     predicateMap.put("property." + temp++ + "_value", code);
-                    log.debug("\nCode Present" + code);
+                    log.debug("Code Present" + code);
                 }
             }
         }
@@ -157,10 +163,19 @@ public class PageUnpublishScheduler implements Runnable {
         }
         return null;
     }
+    public String getDecryptedValue(final String encryptedText) {
+        try {
+            return cryptoSupport.isProtected(encryptedText)
+                    ? cryptoSupport.unprotect(encryptedText)
+                    : encryptedText;
+        } catch (CryptoException e) {
+            e.printStackTrace();
+        }
+    }
 
     private JsonObject fetchApiResponse(String apiUrl) {
-        String username = "admin";
-        String password = "admin";
+        String username = getDecryptedValue(ENCRYPTED_USER_NAME);
+        String password = getDecryptedValue(ENCRYPTED_USER_PASSWORD);
 
         try {
             URL url = new URL(apiUrl);
