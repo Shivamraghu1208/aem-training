@@ -53,7 +53,7 @@ public class HomePageBannerModel {
     @PostConstruct
     protected void init() {
 
-        if (title.isEmpty()) {
+        if(StringUtils.isBlank(title)){
             title = currentPage.getTitle();
         }
         if (!buttonLinkTo.isEmpty() && buttonLinkTo.contains("/content")) {
