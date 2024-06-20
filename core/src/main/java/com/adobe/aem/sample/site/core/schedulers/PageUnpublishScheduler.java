@@ -47,51 +47,49 @@ public class PageUnpublishScheduler implements Runnable {
     private Logger log = LoggerFactory.getLogger(PageUnpublishScheduler.class);
 
     private static final String AEM_TRAINING_CONTENT_READER = "aem-training-content-reader";
-    private static final String ENCRYPTED_USER_NAME = "{bf369c8b28cee021f9f00e23b2ca9321bc279b60e408df065fc6a820d12f90f8}";
-    private static final String ENCRYPTED_USER_PASSWORD = "{bf369c8b28cee021f9f00e23b2ca9321bc279b60e408df065fc6a820d12f90f8}";
 
     @Reference
     private ResourceResolverFactory resourceResolverFactory;
 
     @Reference
-    CryptoSupport cryptoSupport;
+    private CryptoSupport cryptoSupport;
 
     @Reference
-    protected Replicator replicator;
+    private Replicator replicator;
 
     private String apiUrl;
 
     @Activate
     protected void activate(PageUnpublishSchedulerConfiguration config) {
         apiUrl=config.api_url();
-        log.debug("Unpublished page Scheduler Activated ");
+        log.debug("Start of activate method in PageUnpublishScheduler with apiUrl : {}",apiUrl);
     }
 
     @Override
     public void run() {
-        log.debug("Run Method Started");
-        JsonObject jsonResponse = fetchApiResponse(apiUrl);
+        log.debug("Start of run method in PageUnpublishScheduler");
+        JsonObject jsonResponse = fetchApiResponse();
         if (jsonResponse != null) {
             List<String> listOfPagePath = getPagePathList(jsonResponse);
             if (listOfPagePath != null) {
                 unPublishPage(listOfPagePath);
             }
         }
-        log.debug("End of run Method");
+        log.debug("End of run Method PageUnpublishScheduler");
     }
     private void unPublishPage(List<String> listOfPagePath) {
         ResourceResolver resourceResolver = getResourceResolver();
         if (resourceResolver != null) {
             for (String pageResource : listOfPagePath) {
                 try {
-                    replicator.replicate(getSession(resourceResolver), ReplicationActionType.DEACTIVATE, pageResource);
-                    log.debug("PATH OF PAGES WHERE EXPIRE CODE IS PRESENT" + pageResource);
+                    replicator.replicate(resourceResolver.adaptTo(Session.class), ReplicationActionType.DEACTIVATE, pageResource);
+                    log.debug(" Path of pages where expire code is present {}", pageResource);
                 } catch (ReplicationException e) {
-                    log.error("ReplicationException {} {}", e, e.getMessage());
+                    log.error("ReplicationException {}",  e.getMessage() , e);
                 }
 
             }
-
+          resourceResolver.close();
         }
 
     }
@@ -118,7 +116,7 @@ public class PageUnpublishScheduler implements Runnable {
         PredicateGroup predicates = PredicateGroup.create(predicateMap);
         ResourceResolver resourceResolver = getResourceResolver();
         if (resourceResolver != null) {
-            Session session = getSession(resourceResolver);
+            Session session = resourceResolver.adaptTo(Session.class);
             if (session != null) {
                 QueryBuilder queryBuilder = resourceResolver.adaptTo(QueryBuilder.class);
                 if (queryBuilder != null) {
@@ -133,7 +131,7 @@ public class PageUnpublishScheduler implements Runnable {
                                     path = path.replace("/jcr:content", "");
                                     listOfPagePath.add(path);
                                 } catch (RepositoryException e) {
-                                    log.error("RepositoryException {} {}", e, e.getMessage());
+                                    log.error("RepositoryException {}", e.getMessage() ,e);
                                 }
                             }
                             return listOfPagePath;
@@ -143,11 +141,8 @@ public class PageUnpublishScheduler implements Runnable {
 
             }
         }
+        resourceResolver.close();
         return listOfPagePath;
-    }
-
-    private Session getSession(ResourceResolver resourceResolver) {
-        return resourceResolver.adaptTo(Session.class);
     }
 
     private ResourceResolver getResourceResolver() {
@@ -158,7 +153,7 @@ public class PageUnpublishScheduler implements Runnable {
             ResourceResolver resourceResolver = resourceResolverFactory.getServiceResourceResolver(params);
             return resourceResolver;
         } catch (LoginException e) {
-            log.error("Login Exception : {} {}", e, e.getMessage());
+            log.error("Login Exception : {}" , e.getMessage() , e);
         }
         return null;
     }
@@ -168,14 +163,14 @@ public class PageUnpublishScheduler implements Runnable {
                     ? cryptoSupport.unprotect(encryptedText)
                     : encryptedText;
         } catch (CryptoException e) {
-            e.printStackTrace();
+            log.error("CryptoException {} ", e.getMessage() , e);
         }
         return encryptedText;
     }
 
-    private JsonObject fetchApiResponse(String apiUrl) {
-        String username = getDecryptedValue(ENCRYPTED_USER_NAME);
-        String password = getDecryptedValue(ENCRYPTED_USER_PASSWORD);
+    private JsonObject fetchApiResponse() {
+        String username = getDecryptedValue("{bf369c8b28cee021f9f00e23b2ca9321bc279b60e408df065fc6a820d12f90f8}");
+        String password = getDecryptedValue("{bf369c8b28cee021f9f00e23b2ca9321bc279b60e408df065fc6a820d12f90f8}");
 
         try {
             URL url = new URL(apiUrl);
@@ -187,9 +182,9 @@ public class PageUnpublishScheduler implements Runnable {
             JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
             return jsonResponse;
         } catch (MalformedURLException e) {
-            log.error("MalformedURLException {} {}", e, e.getMessage());
+            log.error("MalformedURLException {} ", e.getMessage(), e);
         } catch (IOException e) {
-            log.error("IOException {} {}", e, e.getMessage());
+            log.error("IOException {} ", e.getMessage(), e);
         }
         return null;
     }

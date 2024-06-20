@@ -9,9 +9,6 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 )
 public @interface PageUnpublishSchedulerConfiguration {
 
-    @AttributeDefinition(name = "Scheduler name")
-    public String scheduler_name();
-
     @AttributeDefinition(name = "cron name")
     public String scheduler_expression();
 

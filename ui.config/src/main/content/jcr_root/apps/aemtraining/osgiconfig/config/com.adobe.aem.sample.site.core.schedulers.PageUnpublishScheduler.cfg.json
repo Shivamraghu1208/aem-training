@@ -1,5 +1,4 @@
 {
-  "scheduler.name": "Demo- Scheduler123",
   "scheduler.expression": "0 0/1 * 1/1 * ? *",
   "api.url": "http://localhost:4502/bin/getCarCodes.json"
 }
