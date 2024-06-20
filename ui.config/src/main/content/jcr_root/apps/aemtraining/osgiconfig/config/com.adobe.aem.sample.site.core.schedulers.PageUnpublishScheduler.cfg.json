@@ -1,4 +1,7 @@
 {
   "scheduler.expression": "0 0/1 * 1/1 * ? *",
-  "api.url": "http://localhost:4502/bin/getCarCodes.json"
+  "api.url": "http://localhost:4502/bin/getCarCodes.json",
+  "username": "{bf369c8b28cee021f9f00e23b2ca9321bc279b60e408df065fc6a820d12f90f8}",
+  "password": "{bf369c8b28cee021f9f00e23b2ca9321bc279b60e408df065fc6a820d12f90f8}"
+
 }

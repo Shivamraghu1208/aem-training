@@ -14,4 +14,10 @@ public @interface PageUnpublishSchedulerConfiguration {
 
     @AttributeDefinition(name = "ApiUrl")
     public String api_url();
+
+    @AttributeDefinition(name = "Username")
+    public String username();
+
+    @AttributeDefinition(name = "Password")
+    public String password();
 }

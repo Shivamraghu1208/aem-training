@@ -59,9 +59,14 @@ public class PageUnpublishScheduler implements Runnable {
 
     private String apiUrl;
 
+    private String username;
+
+    private String password;
     @Activate
     protected void activate(PageUnpublishSchedulerConfiguration config) {
         apiUrl=config.api_url();
+        username = getDecryptedValue(config.username());
+        password = getDecryptedValue(config.password());
         log.debug("Start of activate method in PageUnpublishScheduler with apiUrl : {}",apiUrl);
     }
 
@@ -140,8 +145,8 @@ public class PageUnpublishScheduler implements Runnable {
                 }
 
             }
+            resourceResolver.close();
         }
-        resourceResolver.close();
         return listOfPagePath;
     }
 
@@ -169,9 +174,6 @@ public class PageUnpublishScheduler implements Runnable {
     }
 
     private JsonObject fetchApiResponse() {
-        String username = getDecryptedValue("{bf369c8b28cee021f9f00e23b2ca9321bc279b60e408df065fc6a820d12f90f8}");
-        String password = getDecryptedValue("{bf369c8b28cee021f9f00e23b2ca9321bc279b60e408df065fc6a820d12f90f8}");
-
         try {
             URL url = new URL(apiUrl);
             URLConnection connection = (HttpURLConnection) url.openConnection();
