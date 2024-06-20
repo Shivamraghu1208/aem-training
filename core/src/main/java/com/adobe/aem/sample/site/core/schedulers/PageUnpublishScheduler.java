@@ -170,6 +170,7 @@ public class PageUnpublishScheduler implements Runnable {
         } catch (CryptoException e) {
             e.printStackTrace();
         }
+        return encryptedText;
     }
 
     private JsonObject fetchApiResponse(String apiUrl) {
