@@ -64,10 +64,12 @@ public class PageUnpublishScheduler implements Runnable {
     private String password;
     @Activate
     protected void activate(PageUnpublishSchedulerConfiguration config) {
+        log.debug("Start of activate method in PageUnpublishScheduler");
         apiUrl=config.api_url();
         username = getDecryptedValue(config.username());
         password = getDecryptedValue(config.password());
-        log.debug("Start of activate method in PageUnpublishScheduler with apiUrl : {}",apiUrl);
+
+        log.debug("End of activate method in PageUnpublishScheduler and ApiUrl is {}", apiUrl);
     }
 
     @Override
@@ -76,19 +78,18 @@ public class PageUnpublishScheduler implements Runnable {
         JsonObject jsonResponse = fetchApiResponse();
         if (jsonResponse != null) {
             List<String> listOfPagePath = getPagePathList(jsonResponse);
-            if (listOfPagePath != null) {
-                unPublishPage(listOfPagePath);
-            }
+            unPublishPage(listOfPagePath);
+
         }
         log.debug("End of run Method PageUnpublishScheduler");
     }
     private void unPublishPage(List<String> listOfPagePath) {
         ResourceResolver resourceResolver = getResourceResolver();
         if (resourceResolver != null) {
-            for (String pageResource : listOfPagePath) {
+            for (String pagePath : listOfPagePath) {
                 try {
-                    replicator.replicate(resourceResolver.adaptTo(Session.class), ReplicationActionType.DEACTIVATE, pageResource);
-                    log.debug(" Path of pages where expire code is present {}", pageResource);
+                    replicator.replicate(resourceResolver.adaptTo(Session.class), ReplicationActionType.DEACTIVATE, pagePath);
+                    log.debug(" Path of pages where expire code is present {}", pagePath);
                 } catch (ReplicationException e) {
                     log.error("ReplicationException {}",  e.getMessage() , e);
                 }
@@ -102,19 +103,19 @@ public class PageUnpublishScheduler implements Runnable {
         List<String> listOfPagePath = new ArrayList<>();
         Map<String, String> predicateMap = new HashMap<>();
         predicateMap.put("path", "/content/aemtraining");
-        predicateMap.put("type", "cq:PageContent");
+        predicateMap.put("type", "cq:Page");
         predicateMap.put("property.operation", "equals");
-        predicateMap.put("property", "carcodes");
+        predicateMap.put("property", "jcr:content/carcodes");
         predicateMap.put("p.limit", "-1");
         if (!jsonResponse.isJsonNull() && !jsonResponse.get("responseCodes").isJsonNull()) {
-            JsonArray asJsonArray = jsonResponse.getAsJsonArray("responseCodes");
+            JsonArray responseArray = jsonResponse.getAsJsonArray("responseCodes");
             int temp = 1;
-            if (asJsonArray != null) {
-                for (int i = 0; i < asJsonArray.size(); i++) {
-                    JsonElement jsonElement = asJsonArray.get(i);
+            if (responseArray != null) {
+                for (int i = 0; i < responseArray.size(); i++) {
+                    JsonElement jsonElement = responseArray.get(i);
                     String code = jsonElement.getAsString();
                     predicateMap.put("property." + temp++ + "_value", code);
-                    log.debug("Code Present" + code);
+                    log.debug("Code Present {}", code);
                 }
             }
         }
@@ -133,7 +134,6 @@ public class PageUnpublishScheduler implements Runnable {
                             for (Hit hit : hits) {
                                 try {
                                     String path = hit.getPath();
-                                    path = path.replace("/jcr:content", "");
                                     listOfPagePath.add(path);
                                 } catch (RepositoryException e) {
                                     log.error("RepositoryException {}", e.getMessage() ,e);
