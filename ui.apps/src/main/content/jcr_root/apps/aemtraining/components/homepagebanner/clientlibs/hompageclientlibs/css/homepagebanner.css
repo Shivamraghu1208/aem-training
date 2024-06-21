@@ -1,0 +1,54 @@
+    .home-page-container{
+            display: flex;
+             align-items: center;
+           justify-content: space-between;
+            padding: 20px;
+            border: 2px solid #ccc;
+           border-radius: 10px;
+           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+
+        }
+        .home-page-content-container{
+
+          flex: 1;
+          align-content: center;
+
+
+         }
+         .home-page-content-container h1
+         {
+            margin-left: 15%;
+            font-size: 50px;
+            font-style: oblique;
+            color: grey;
+         }
+         .home-page-content-container h2
+         {
+            margin-left: 15%;
+            font-size: 25px;
+            color: grey;
+         }
+         .home-page-content-container button
+         {
+            margin-left: 15%;
+    background-color: grey;
+    height: 50px;
+    width: 150px;
+    font-size: 17px;
+    border-radius: 10px;
+    border-color: black;
+         }
+         .home-page-image-container {
+           flex: 2;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           overflow: hidden;
+           background-color: aqua   ;
+}
+       .home-page-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
