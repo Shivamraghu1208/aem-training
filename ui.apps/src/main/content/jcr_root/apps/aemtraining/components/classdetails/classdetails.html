@@ -1,0 +1,18 @@
+<sly data-sly-use.templates="core/wcm/components/commons/v1/templates.html"/>
+<sly data-sly-use.classDetailModel="com.adobe.aem.sample.site.core.models.ClassDetailModel"/>
+<sly data-sly-test.isAuthored="${classDetailModel.className}"/>
+<sly data-sly-test="${isAuthored}">
+    <h1>${classDetailModel.className}</h1>
+    <div class="teacher-detail-container" data-sly-test="${classDetailModel.selectValue == 'valueTeacher'}">
+        <h2>Teacher Name : ${classDetailModel.teacherName}</h2>
+        <h2>Subject :${classDetailModel.subject}</h2>
+        <img alt="loading.. image" src="${classDetailModel.teacherImage}" />
+    </div>
+    <div class="student-detail-container"  data-sly-test="${classDetailModel.selectValue == 'valueStudent'}">
+        <h2>Student Name :${classDetailModel.studentName}</h2>
+        <h2>RollNumber :${classDetailModel.rollNumber}</h2>
+        <img alt="loading.. image" src="${classDetailModel.studentImage}" />
+    </div>
+</sly>
+
+<sly data-sly-call="${templates.placeholder @ isEmpty = isAuthored, classAppend='cmp-text'}"></sly>
