@@ -1,0 +1,41 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:createdBy": "admin",
+  "studentName": "Shivam Raghuwanshi",
+  "subject": "Java",
+  "jcr:lastModifiedBy": "admin",
+  "rollNumber": "12345",
+  "fileName": "beautiful_actress_samantha_girl_model_is_posing_for_a_photo_wearing_white_dress_standing_in_dark_background_hd_girls.jpg",
+  "jcr:created": "Mon Jun 24 2024 16:09:33 GMT+0530",
+  "className": "Java Class",
+  "jcr:lastModified": "Mon Jun 24 2024 16:37:35 GMT+0530",
+  "sling:resourceType": "aemtraining/components/classdetails",
+  "dropdownValue": "valueStudent",
+  "teacherName": "Samantha",
+  "teacherImage": {
+    "jcr:primaryType": "nt:file",
+    "jcr:createdBy": "admin",
+    "jcr:created": "Mon Jun 24 2024 16:30:28 GMT+0530",
+    "jcr:content": {
+      "jcr:primaryType": "nt:resource",
+      "jcr:lastModifiedBy": "admin",
+      "jcr:mimeType": "image/jpeg",
+      "jcr:lastModified": "Mon Jun 24 2024 16:30:28 GMT+0530",
+      ":jcr:data": 1085480,
+      "jcr:uuid": "693e6be5-61c5-4399-8c49-5bfbd39ec0a5"
+    }
+  },
+  "studentImage": {
+    "jcr:primaryType": "nt:file",
+    "jcr:createdBy": "admin",
+    "jcr:created": "Mon Jun 24 2024 16:37:33 GMT+0530",
+    "jcr:content": {
+      "jcr:primaryType": "nt:resource",
+      "jcr:lastModifiedBy": "admin",
+      "jcr:mimeType": "image/jpeg",
+      "jcr:lastModified": "Mon Jun 24 2024 16:37:33 GMT+0530",
+      ":jcr:data": 331466,
+      "jcr:uuid": "c0434718-256e-4f1d-92c8-c09133f04383"
+    }
+  }
+}
