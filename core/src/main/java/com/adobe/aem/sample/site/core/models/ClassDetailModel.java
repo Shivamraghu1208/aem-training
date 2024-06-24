@@ -21,7 +21,7 @@ public class ClassDetailModel {
 
     @ValueMapValue
     @Default(values = "")
-    private String selectValue;
+    private String dropdownValue;
 
     @ValueMapValue
     @Default(values = "")
@@ -60,8 +60,8 @@ public class ClassDetailModel {
         return className;
     }
 
-    public String getSelectValue() {
-        return selectValue;
+    public String getDropdownValue() {
+        return dropdownValue;
     }
 
     public String getStudentName() {

@@ -22,8 +22,8 @@
                         granite:class="cq-dialog-dropdown-showhide"
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                        fieldLabel="Choose "
-                        name="./selectValue">
+                        fieldLabel="Select"
+                        name="./dropdownValue">
                         <items jcr:primaryType="nt:unstructured">
                             <Student
                                 jcr:primaryType="nt:unstructured"

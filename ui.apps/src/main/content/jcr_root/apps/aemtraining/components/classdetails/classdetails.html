@@ -3,12 +3,12 @@
 <sly data-sly-test.isAuthored="${classDetailModel.className}"/>
 <sly data-sly-test="${isAuthored}">
     <h1>${classDetailModel.className}</h1>
-    <div class="teacher-detail-container" data-sly-test="${classDetailModel.selectValue == 'valueTeacher'}">
+    <div class="teacher-detail-container" data-sly-test="${classDetailModel.dropdownValue == 'valueTeacher'}">
         <h2>Teacher Name : ${classDetailModel.teacherName}</h2>
         <h2>Subject :${classDetailModel.subject}</h2>
         <img alt="loading.. image" src="${classDetailModel.teacherImage}" />
     </div>
-    <div class="student-detail-container"  data-sly-test="${classDetailModel.selectValue == 'valueStudent'}">
+    <div class="student-detail-container"  data-sly-test="${classDetailModel.dropdownValue == 'valueStudent'}">
         <h2>Student Name :${classDetailModel.studentName}</h2>
         <h2>RollNumber :${classDetailModel.rollNumber}</h2>
         <img alt="loading.. image" src="${classDetailModel.studentImage}" />
