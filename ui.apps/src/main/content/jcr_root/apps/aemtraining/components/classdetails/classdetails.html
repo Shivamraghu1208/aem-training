@@ -15,4 +15,4 @@
     </div>
 </sly>
 
-<sly data-sly-call="${templates.placeholder @ isEmpty = isAuthored, classAppend='cmp-text'}"></sly>
+<sly data-sly-call="${templates.placeholder @ isEmpty = !isAuthored, classAppend='cmp-text'}"></sly>
