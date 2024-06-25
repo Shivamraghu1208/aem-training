@@ -1,0 +1,13 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:createdBy": "admin",
+  "studentName": "Shivam Raghuwanshi",
+  "fileReferenceStudent": "/content/dam/core-components-examples/library/sample-assets/lava-rock-formation.jpg",
+  "jcr:lastModifiedBy": "admin",
+  "rollNumber": "12345",
+  "jcr:created": "Tue Jun 25 2024 11:50:27 GMT+0530",
+  "className": "Java Class",
+  "jcr:lastModified": "Tue Jun 25 2024 11:51:04 GMT+0530",
+  "sling:resourceType": "aemtraining/components/classdetails",
+  "dropdownValue": "valueStudent"
+}

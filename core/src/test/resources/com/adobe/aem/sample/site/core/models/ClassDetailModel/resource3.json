@@ -1,0 +1,14 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:createdBy": "admin",
+  "studentName": null,
+  "jcr:lastModifiedBy": "admin",
+  "rollNumber": null,
+  "jcr:created": "Tue Jun 25 2024 12:28:16 GMT+0530",
+  "className":null,
+  "jcr:lastModified": "Tue Jun 25 2024 12:28:35 GMT+0530",
+  "sling:resourceType": "aemtraining/components/classdetails",
+  "dropdownValue": "valueStudent",
+  "teacherName": null,
+  "subject": null
+}
