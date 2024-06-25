@@ -1,0 +1,27 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:createdBy": "admin",
+  "subject": "AEM",
+  "jcr:lastModifiedBy": "admin",
+  "fileName": "beautiful_actress_samantha_girl_model_is_posing_for_a_photo_wearing_white_dress_standing_in_dark_background_hd_girls.jpg",
+  "jcr:created": "Tue Jun 25 2024 12:08:17 GMT+0530",
+  "className": "AEM",
+  "jcr:lastModified": "Tue Jun 25 2024 12:10:00 GMT+0530",
+  "sling:resourceType": "aemtraining/components/classdetails",
+  "dropdownValue": "valueTeacher",
+  "teacherName": "Samantha",
+  "teacherImage": {
+    "jcr:primaryType": "nt:file",
+    "jcr:createdBy": "admin",
+    "jcr:created": "Tue Jun 25 2024 12:09:19 GMT+0530",
+    "jcr:content": {
+      "jcr:primaryType": "nt:resource",
+      "jcr:lastModifiedBy": "admin",
+      "jcr:mimeType": "image/jpeg",
+      "jcr:lastModified": "Tue Jun 25 2024 12:09:19 GMT+0530",
+      ":jcr:data": 1085480,
+      "jcr:uuid": "e41b529c-09f2-4a34-a5c8-c6596b722573"
+    }
+  }
+
+}

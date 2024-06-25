@@ -18,52 +18,65 @@ class ClassDetailModelTest {
 
     private ClassDetailModel classDetailModel;
 
-    @BeforeEach
-    void setUp() {
+    @Test
+    void testClassDetail() {
         context.load(true).json("/com/adobe/aem/sample/site/core/models/ClassDetailModel/resource.json", "/content/shivam/test");
         context.currentResource("/content/shivam/test");
-         classDetailModel = context.request().adaptTo(ClassDetailModel.class);
-         assertNotNull(classDetailModel);
-
-    }
-    @Test
-    void getClassName() {
+        classDetailModel = context.request().adaptTo(ClassDetailModel.class);
+        assertNotNull(classDetailModel);
         assertEquals("Java Class",classDetailModel.getClassName());
-    }
-
-    @Test
-    void getDropdownValue() {
         assertEquals("valueStudent",classDetailModel.getDropdownValue());
-
-    }
-
-    @Test
-    void getStudentName() {
         assertEquals("Shivam Raghuwanshi",classDetailModel.getStudentName());
-    }
-
-    @Test
-    void getRollNumber() {
         assertEquals("12345",classDetailModel.getRollNumber());
-    }
-
-    @Test
-    void getStudentImage() {
         assertEquals("/content/shivam/test/studentImage",classDetailModel.getStudentImage());
-    }
-
-    @Test
-    void getTeacherImage() {
         assertEquals("/content/shivam/test/teacherImage",classDetailModel.getTeacherImage());
-    }
-
-    @Test
-    void getTeacherName() {
         assertEquals("Samantha",classDetailModel.getTeacherName());
+        assertEquals("Java",classDetailModel.getSubject());
     }
 
     @Test
-    void getSubject() {
-        assertEquals("Java",classDetailModel.getSubject());
+    void testWithStudent()
+    {
+        context.load(true).json("/com/adobe/aem/sample/site/core/models/ClassDetailModel/resource1.json", "/content/shivam/test");
+        context.currentResource("/content/shivam/test");
+        classDetailModel = context.request().adaptTo(ClassDetailModel.class);
+        assertNotNull(classDetailModel);
+        assertEquals("Java Class",classDetailModel.getClassName());
+        assertEquals("valueStudent",classDetailModel.getDropdownValue());
+        assertEquals("Shivam Raghuwanshi",classDetailModel.getStudentName());
+        assertEquals("/content/dam/core-components-examples/library/sample-assets/lava-rock-formation.jpg",classDetailModel.getStudentImage());
+        assertEquals("12345",classDetailModel.getRollNumber());
+        assertEquals("",classDetailModel.getTeacherName());
+        assertEquals("",classDetailModel.getTeacherImage());
+        assertEquals("",classDetailModel.getSubject());
+    }
+    @Test
+    void testWithTeacher()
+    {
+        context.load(true).json("/com/adobe/aem/sample/site/core/models/ClassDetailModel/resource2.json", "/content/shivam/test");
+        context.currentResource("/content/shivam/test");
+        classDetailModel = context.request().adaptTo(ClassDetailModel.class);
+        assertNotNull(classDetailModel);
+        assertEquals("AEM",classDetailModel.getClassName());
+        assertEquals("valueTeacher",classDetailModel.getDropdownValue());
+        assertEquals("",classDetailModel.getStudentName());
+        assertEquals("",classDetailModel.getStudentImage());
+        assertEquals("",classDetailModel.getRollNumber());
+        assertEquals("Samantha",classDetailModel.getTeacherName());
+        assertEquals("/content/shivam/test/teacherImage",classDetailModel.getTeacherImage());
+        assertEquals("AEM",classDetailModel.getSubject());
+    }
+    @Test
+    void testWithNullValue()
+    {
+        context.load(true).json("/com/adobe/aem/sample/site/core/models/ClassDetailModel/resource3.json", "/content/shivam/test");
+        context.currentResource("/content/shivam/test");
+        classDetailModel = context.request().adaptTo(ClassDetailModel.class);
+        assertNotNull(classDetailModel);
+        assertEquals("",classDetailModel.getClassName());
+        assertEquals("valueStudent",classDetailModel.getDropdownValue());
+        assertEquals("",classDetailModel.getStudentName());
+        assertEquals("",classDetailModel.getStudentImage());
+        assertEquals("",classDetailModel.getRollNumber());
     }
 }
