@@ -1,0 +1,14 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:createdBy": "admin",
+  "buttonLabel": null,
+  "description": null,
+  "jcr:lastModifiedBy": "admin",
+  "jcr:created": "Mon Jun 17 2024 17:30:00 GMT+0530",
+  "title": null,
+  "buttonLinkTo": null,
+  "jcr:lastModified": "Mon Jun 24 2024 13:29:29 GMT+0530",
+  "sling:resourceType": "aemtraining/components/homepagebanner",
+  "textIsRich": "true"
+
+}

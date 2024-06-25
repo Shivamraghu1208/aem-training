@@ -1,0 +1,27 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:createdBy": "admin",
+  "buttonLabel": "click me",
+  "description": "<p>Heyy Hows You</p>\r\n",
+  "jcr:lastModifiedBy": "admin",
+  "fileName": "beautiful_actress_samantha_girl_model_is_posing_for_a_photo_wearing_white_dress_standing_in_dark_background_hd_girls.jpg",
+  "jcr:created": "Mon Jun 17 2024 17:30:00 GMT+0530",
+  "title": "Home Page",
+  "buttonLinkTo": "/content/we-retail/it",
+  "jcr:lastModified": "Mon Jun 24 2024 13:29:29 GMT+0530",
+  "sling:resourceType": "aemtraining/components/homepagebanner",
+  "textIsRich": "true",
+  "image": {
+    "jcr:primaryType": "nt:file",
+    "jcr:createdBy": "admin",
+    "jcr:created": "Mon Jun 17 2024 17:35:36 GMT+0530",
+    "jcr:content": {
+      "jcr:primaryType": "nt:resource",
+      "jcr:lastModifiedBy": "admin",
+      "jcr:mimeType": "image/jpeg",
+      "jcr:lastModified": "Mon Jun 17 2024 17:35:36 GMT+0530",
+      ":jcr:data": 1085480,
+      "jcr:uuid": "2d04b6a6-7460-4baa-bacf-168859bde8c0"
+    }
+  }
+}
