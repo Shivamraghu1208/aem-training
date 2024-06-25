@@ -52,28 +52,27 @@ public class HomePageBannerModel {
 
     @PostConstruct
     protected void init() {
-
-        if(StringUtils.isBlank(title)){
-            title = currentPage.getTitle();
-        }
-        if (!buttonLinkTo.isEmpty() && buttonLinkTo.contains("/content")) {
-            if (!buttonLinkTo.contains(".html")) {
-                buttonLinkTo = buttonLinkTo + ".html";
-            }
-        } else {
-            buttonLinkTo = "#";
-        }
-        if (StringUtils.isBlank(fileReference)) {
-            Resource image = resource.getChild("image");
-            if (image != null) {
-                fileReference = image.getPath();
-            }
-        }
-
         WCMMode wcmMode = WCMMode.fromRequest((ServletRequest) this.request);
         if (wcmMode != null)
             this.isPublishMode = (wcmMode == WCMMode.DISABLED);
-
+        if (isPublishMode) {
+            if (StringUtils.isBlank(title)) {
+                title = currentPage.getTitle();
+            }
+            if (!buttonLinkTo.isEmpty() && buttonLinkTo.contains("/content")) {
+                if (!buttonLinkTo.contains(".html")) {
+                    buttonLinkTo = buttonLinkTo + ".html";
+                }
+            } else {
+                buttonLinkTo = "#";
+            }
+            if (StringUtils.isBlank(fileReference)) {
+                Resource image = resource.getChild("image");
+                if (image != null) {
+                    fileReference = image.getPath();
+                }
+            }
+        }
     }
 
     public String getButtonLabel() {

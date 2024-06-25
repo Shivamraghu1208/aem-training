@@ -1,5 +1,6 @@
 package com.adobe.aem.sample.site.core.models;
 
+import com.day.cq.wcm.api.Page;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -19,44 +20,34 @@ class HomePageBannerModelTest {
 
     @Mock
     private SlingHttpServletRequest request;
+    @Mock
+    private Page currentPage;
 
     private HomePageBannerModel homePageBannerModel;
-    @BeforeEach
-    void setUp() {
+    @Test
+    void testHomePageBanner() {
         context.load(true).json("/com/adobe/aem/sample/site/core/models/HomePageBannerModel/resource.json", "/content/aem-training/us/en/test");
         context.currentResource("/content/aem-training/us/en/test");
         homePageBannerModel = context.request().adaptTo(HomePageBannerModel.class);
         assertNotNull(homePageBannerModel);
-    }
-
-    @Test
-    void getButtonLabel() {
         assertEquals("click me",homePageBannerModel.getButtonLabel());
-    }
-
-    @Test
-    void getButtonLinkTo() {
         assertEquals("/content/we-retail/it.html",homePageBannerModel.getButtonLinkTo());
-    }
-
-    @Test
-    void getDescription() {
         assertEquals("<p>Heyy Hows You</p>\r\n", homePageBannerModel.getDescription());
-    }
-
-    @Test
-    void getTitle() {
         assertEquals("Home Page", homePageBannerModel.getTitle());
-    }
-
-    @Test
-    void getFileReference() {
         assertEquals("/content/aem-training/us/en/test/image",homePageBannerModel.getFileReference());
-    }
-
+        assertTrue(homePageBannerModel.isPublishMode()); }
     @Test
-    void isPublishMode() {
-        assertTrue(homePageBannerModel.isPublishMode());
-
+    void testWithNull()
+    { context.load(true).json("/com/adobe/aem/sample/site/core/models/HomePageBannerModel/resource1.json", "/content/aem-training/us/en/test/homePageBanner");
+        context.currentResource("/content/aem-training/us/en/test/homePageBanner");
+        Page page = context.create().page("/content/aem-training/us/en/test");
+        context.currentPage(page);
+        homePageBannerModel = context.request().adaptTo(HomePageBannerModel.class);
+        assertNotNull(homePageBannerModel);
+        assertEquals("",homePageBannerModel.getDescription());
+        assertEquals("",homePageBannerModel.getButtonLabel());
+        assertEquals("",homePageBannerModel.getFileReference());
+        assertEquals("test",homePageBannerModel.getTitle());
+        assertEquals("#",homePageBannerModel.getButtonLinkTo());
     }
 }
