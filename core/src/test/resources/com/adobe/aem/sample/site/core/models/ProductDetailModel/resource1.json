@@ -1,0 +1,11 @@
+{
+  "jcr:primaryType": "nt:unstructured",
+  "jcr:createdBy": "admin",
+  "selectHeadingTag": null,
+  "jcr:lastModifiedBy": "admin",
+  "jcr:created": "Mon Jun 24 2024 19:24:59 GMT+0530",
+  "numberOfProducts": null,
+  "heading": null,
+  "jcr:lastModified": "Mon Jun 24 2024 19:25:15 GMT+0530",
+  "sling:resourceType": "aemtraining/components/productdetail"
+}
