@@ -7,6 +7,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
@@ -18,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 
-@Model(adaptables = Resource.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+@Model(adaptables = {Resource.class, SlingHttpServletRequest.class},defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class ProductDetailModel {
 
     @OSGiService
@@ -28,20 +30,15 @@ public class ProductDetailModel {
 
     private Logger logger = LoggerFactory.getLogger(ProductDetailModel.class);
 
-
     private String response;
 
-
     private ArrayList<Product> list = new ArrayList<>();
-
-
 
     @ValueMapValue
     private String selectHeadingTag;
 
     @ValueMapValue
     private long numberOfProducts;
-
 
     public String getResponse() {
         return response;
@@ -62,17 +59,14 @@ public class ProductDetailModel {
 
     @PostConstruct
     protected void init() {
-
         response = productDetailService.getResponse();
-        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
-        if (!jsonObject.isJsonNull() && !jsonObject.get("products").isJsonNull()) {
-
+        if (!StringUtils.isBlank(response)) {
+            JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
+            if (!jsonObject.isJsonNull() && !jsonObject.get("products").isJsonNull()) {
                 JsonArray jsonArray = jsonObject.get("products").getAsJsonArray();
                 if (jsonArray != null) {
-
                     for (int i = 0; i < numberOfProducts; i++) {
                         JsonElement jsonElement = jsonArray.get(i);
-
                         JsonObject asJsonObject = jsonElement.getAsJsonObject();
                         int id = asJsonObject.get("id").getAsInt();
                         String title = asJsonObject.get("title").getAsString();
@@ -86,7 +80,6 @@ public class ProductDetailModel {
                         product.setBrand(brand);
                         product.setPrice(price);
                         product.setImage(image);
-
                         list.add(product);
 
                     }
@@ -94,5 +87,6 @@ public class ProductDetailModel {
             }
         }
     }
+}
 
 
