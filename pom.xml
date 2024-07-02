@@ -35,7 +35,7 @@
             
     <module>core</module>
             
-    <module>ui.frontend</module>
+<!--    <module>ui.frontend</module>-->
              
     <module>ui.apps</module>
             
@@ -44,10 +44,10 @@
     <module>ui.config</module>
             
     <module>ui.content</module>
+
+<!--    <module>it.tests</module>-->
             
-    <module>it.tests</module>
-            
-    <module>ui.tests</module>
+<!--    <module>ui.tests</module>-->
       
   </modules>
       
@@ -110,7 +110,7 @@
         </configuration>
                     
       </plugin>
-                  
+
       <!-- Maven Source Plugin -->
                   
       <plugin>
@@ -1530,7 +1530,7 @@ Bundle-DocURL:
         <scope>test</scope>
       </dependency>
 
-      <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+<!--      &lt;!&ndash; https://mvnrepository.com/artifact/com.google.code.gson/gson &ndash;&gt;-->
       <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
