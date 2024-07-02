@@ -60,7 +60,7 @@ public class ProductDetailModel {
     @PostConstruct
     protected void init() {
         response = productDetailService.getResponse();
-        if (!StringUtils.isBlank(response)) {
+        if (StringUtils.isNotBlank(response)) {
             JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
             if (!jsonObject.isJsonNull() && !jsonObject.get("products").isJsonNull()) {
                 JsonArray jsonArray = jsonObject.get("products").getAsJsonArray();
