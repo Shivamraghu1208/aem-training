@@ -20,47 +20,97 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 
+/**
+ * A ProductDetailModel is a sling model class which is used to retrieve a response from service, parses the json response and
+ * prepare the list of  product .
+ */
 @Model(adaptables = {Resource.class, SlingHttpServletRequest.class},defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class ProductDetailModel {
 
+    /**
+     * The productDetailService - productDetailService object
+     */
     @OSGiService
     private ProductDetailService productDetailService;
+
+    /**
+     * The heading of the component.
+     */
     @ValueMapValue
     private String heading;
 
+    /**
+     * The logger - Logger object
+     * Used for logging messages related to ProductDetailModel.
+     */
     private Logger logger = LoggerFactory.getLogger(ProductDetailModel.class);
 
+    /**
+     * The response message.
+     */
     private String response;
 
+    /**
+     *The list - A list of  Product objects.
+     * This list is used to store the products.
+     */
     private ArrayList<Product> list = new ArrayList<>();
 
+    /**
+     * The selected heading tag for the component.
+     */
     @ValueMapValue
     private String selectHeadingTag;
 
+    /**
+     * The number of products to display.
+     */
     @ValueMapValue
     private long numberOfProducts;
 
+
+    /**
+     * used to get response.
+     * @return a string response.
+     */
     public String getResponse() {
         return response;
     }
 
+    /**
+     * used to retrieve a product list.
+     * @return a list of products.
+     */
     public ArrayList<Product> getList() {
         return list;
     }
 
+    /**
+     * used to retrieve heading for the component.
+     * @return  a string contains heading.
+     */
     public String getHeading() {
         return heading;
     }
-
+    /**
+     * used to retrieve heading Tag for the component.
+     * @return a string contains HeadingTag.
+     */
     public String getSelectHeadingTag() {
         return selectHeadingTag;
     }
 
 
+    /**
+     *  This method is automatically called by the Sling framework after the Sling Model object
+     *   is created and all dependencies are injected.
+     *  This method retrieves the response from the product detail service,
+     *   parses the JSON response, and add to the list of products.
+     */
     @PostConstruct
     protected void init() {
         response = productDetailService.getResponse();
-        if (StringUtils.isNotBlank(response)) {
+        if (!StringUtils.isNotBlank(response)) {
             JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
             if (!jsonObject.isJsonNull() && !jsonObject.get("products").isJsonNull()) {
                 JsonArray jsonArray = jsonObject.get("products").getAsJsonArray();
