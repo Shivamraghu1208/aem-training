@@ -20,6 +20,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * ProductDetailServiceImpl is an implementation of the ProductDetailService interface.
+ * It retrieve data from an Api specified by configuration and return response.
+ */
 @Component(service = ProductDetailService.class,immediate = true)
 @Designate(ocd= ProductDetailServiceConfiguration.class)
 public class ProductDetailServiceImpl implements ProductDetailService{
@@ -28,11 +32,19 @@ public class ProductDetailServiceImpl implements ProductDetailService{
 
     private Logger logger = LoggerFactory.getLogger(ProductDetailServiceImpl.class);
 
+
+    /**
+     * Retrieves response from the API.
+     * @return  The response from the API as a String.
+     */
     @Override
     public String getResponse() {
         return response;
     }
-
+    /**
+     * Retrieves data from the API URL specified in the configuration.
+     * @param configuration The configuration object.
+     */
     @Activate
     @Modified
     protected void activate(ProductDetailServiceConfiguration configuration){
