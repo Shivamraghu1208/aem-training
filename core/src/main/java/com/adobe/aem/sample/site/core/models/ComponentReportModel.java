@@ -39,7 +39,8 @@ public class ComponentReportModel {
     private String title;
 
     /**
-     * The dropDownPlaceHolder - Name of dropdown
+     * The dropDownPlaceHolder - represents the name to be displayed
+     * as a placeholder in a dropdown.
      */
     @ValueMapValue
     private String dropDownPlaceHolder;
