@@ -35,7 +35,7 @@
             
     <module>core</module>
             
-<!--    <module>ui.frontend</module>-->
+    <module>ui.frontend</module>
              
     <module>ui.apps</module>
             
@@ -45,9 +45,9 @@
             
     <module>ui.content</module>
 
-<!--    <module>it.tests</module>-->
+    <module>it.tests</module>
             
-<!--    <module>ui.tests</module>-->
+    <module>ui.tests</module>
       
   </modules>
       
