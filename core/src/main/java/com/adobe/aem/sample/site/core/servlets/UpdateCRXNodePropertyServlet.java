@@ -18,17 +18,35 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+/**
+ * UpdateCRXNodePropertyServlet is a Sling Servlet that handles GET requests to modify
+ * properties of a CRXNode in AEM based on Path and value.
+ * It uses ResourceResolverFactory for resolving resources
+ * and modifying their properties.
+ *
+ * Parameters:
+ * - value: The value to set for the property named "Shivam".
+ * - path: The path of the resource where property need to be modified.
+ */
 @Component(service = {Servlet.class}, property = {"sling.servlet.methods=GET", "sling.servlet.paths=/bin/shivam/runmode", "sling.servlet.extensions=json"})
-public class CheckRunmodeServlet extends SlingSafeMethodsServlet {
-    Logger logger = LoggerFactory.getLogger(CheckRunmodeServlet.class);
+public class UpdateCRXNodePropertyServlet extends SlingSafeMethodsServlet {
+    Logger logger = LoggerFactory.getLogger(UpdateCRXNodePropertyServlet.class);
 
-    @Reference
-    private transient SlingSettingsService service;
 
+    /**
+     * The resourceResolverFactory - Object of resourceResolverFactory.
+     * used for resolving resources and modifying their properties.
+     */
     @Reference
     private ResourceResolverFactory resourceResolverFactory;
 
+    /**
+     * This method handles GET request and use resourceResolverFactory to resolve the resource and
+     * modifying the properties.
+     * @param request - SlingHttpServletRequest object
+     * @param response - SlingHttpServletResponse object
+     * @throws IOException
+     */
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
         Map<String, Object> params = new HashMap<>();
         params.put("sling.service.subservice", "aem-training-content-writer");

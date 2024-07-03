@@ -13,17 +13,31 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.osgi.service.component.annotations.Component;
+/**
+ * This servlet compares two different tags Structure based on there titles and returns matched tags.
+ *
+ * The servlet fetches tags from "/content/cq:tags" and "/etc/tags" paths, compares their titles,
+ * and add the matched tags  in listOfMatched.
+ */
 
 @Component(service = {Servlet.class}, property = {"sling.servlet.methods=GET", "sling.servlet.paths=/bin/match", "sling.servlet.extensions=json"})
 public class MatcherServlet extends SlingSafeMethodsServlet {
+    /**
+     * The listOfMatched - A list contains a Matched tags.
+     */
     List<String> listOfMatched = new ArrayList<>();
 
-    List<String> listOfUnMatched = new ArrayList<>();
-
+    /**
+     * Handles GET request to get matched tags from two tag structures.
+     *
+     * @param request  SlingHttpServletRequest object
+     * @param response SlingHttpServletResponse object
+     * @throws ServletException
+     * @throws IOException
+     */
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
         ObjectMapper map = new ObjectMapper();
         this.listOfMatched = new ArrayList<>();
-        this.listOfUnMatched = new ArrayList<>();
         ResourceResolver resourceResolver = request.getResourceResolver();
         Resource contentResource = resourceResolver.getResource("/content/cq:tags");
         Resource etcResource = resourceResolver.getResource("/etc/tags");
@@ -32,6 +46,13 @@ public class MatcherServlet extends SlingSafeMethodsServlet {
         List<String> list = executeProcess(contentChild, etcChild);
         response.getWriter().write(map.writeValueAsString("Matched " + list));
     }
+    /**
+     * Executes the comparison process between two lists of tag and their child.
+     *
+     * @param contentChild List of resources from "/content/cq:tags".
+     * @param etcChild     List of resources from "/etc/tags".
+     * @return List of paths of matched tags.
+     */
 
     List<String> executeProcess(List<Resource> contentChild, List<Resource> etcChild) {
         if (contentChild != null && etcChild != null)
@@ -49,7 +70,12 @@ public class MatcherServlet extends SlingSafeMethodsServlet {
             }
         return this.listOfMatched;
     }
-
+    /**
+     * Retrieves children resources of a given resource.
+     *
+     * @param resource  whose children are to be retrieved.
+     * @return List of child resources.
+     */
     List<Resource> getChild(Resource resource) {
         if (resource == null)
             return new ArrayList<>();
