@@ -8,13 +8,18 @@ import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.jcr.RepositoryException;
@@ -23,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+;
 
 /**
  * The  ComponentReportModel class is a Sling Model used to get all the  components
@@ -31,6 +37,13 @@ import java.util.Map;
  */
 @Model(adaptables = {Resource.class, SlingHttpServletRequest.class}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class ComponentReportModel {
+
+
+    /**
+     * The log - Logger object for logging messages specific to the
+     *  ComponentReportModel class.
+     */
+    private Logger log=LoggerFactory.getLogger(ComponentReportModel.class);
 
     /**
      * The title - title of Component
@@ -44,12 +57,12 @@ public class ComponentReportModel {
      */
     @ValueMapValue
     private String dropDownPlaceHolder;
-
     /**
-     * The request -  SlingHttpServletRequest object
+     * The resourceResolverFactory - ResourceResolverFactory service used to create instances of
+     *  ResourceResolver.
      */
-    @SlingObject
-    private SlingHttpServletRequest request;
+    @OSGiService
+    private ResourceResolverFactory resourceResolverFactory;
 
     /**
      * The buttonLabel - label of button
@@ -83,33 +96,40 @@ public class ComponentReportModel {
         predicateMap.put("path", "/apps/aemtraining/components");
         predicateMap.put("type", "cq:Component");
         predicateMap.put("p.limit", "-1");
+        final Map<String, Object> params = new HashMap<>();
+        params.put(ResourceResolverFactory.SUBSERVICE, "aem-training-content-reader");
+        ResourceResolver resourceResolver = null;
+        try {
+            resourceResolver = resourceResolverFactory.getServiceResourceResolver(params);
+        } catch (LoginException e) {
+            log.error("Login Exception : {}", e, e.getMessage());
+        }
+        if (resourceResolver != null) {
+            Session session = resourceResolver.adaptTo(Session.class);
+            PredicateGroup predicates = PredicateGroup.create(predicateMap);
+            if (session != null) {
+                QueryBuilder queryBuilder = resourceResolver.adaptTo(QueryBuilder.class);
+                if (queryBuilder != null) {
+                    Query query = queryBuilder.createQuery(predicates, session);
+                    SearchResult result = query.getResult();
+                    List<Hit> hits = result.getHits();
+                    if (!hits.isEmpty()) {
+                        for (Hit hit : hits) {
+                            Resource resource = hit.getResource();
+                            ValueMap valueMap = resource.getValueMap();
+                            String title = valueMap.get("jcr:title", "");
+                            String path = resource.getPath();
+                            path = path.replace("/apps/", "");
+                            ComponentReport componentReportPojo = new ComponentReport();
+                            componentReportPojo.setTitle(title);
+                            componentReportPojo.setPath(path);
+                            listOfPojo.add(componentReportPojo);
 
-        PredicateGroup predicates = PredicateGroup.create(predicateMap);
-        ResourceResolver resourceResolver = request.getResourceResolver();
-        Session session = resourceResolver.adaptTo(Session.class);
-        if (session != null) {
-            QueryBuilder queryBuilder = resourceResolver.adaptTo(QueryBuilder.class);
-            if (queryBuilder != null) {
-                Query query = queryBuilder.createQuery(predicates, session);
-                SearchResult result = query.getResult();
-                List<Hit> hits = result.getHits();
-                if (!hits.isEmpty()) {
-                    for (Hit hit : hits) {
-                        Resource resource = hit.getResource();
-                        ValueMap valueMap = resource.getValueMap();
-                        String title = valueMap.get("jcr:title", "");
-                        String path = resource.getPath();
-                        path = path.replace("/apps/", "");
-                        ComponentReport componentReportPojo = new ComponentReport();
-                        componentReportPojo.setTitle(title);
-                        componentReportPojo.setPath(path);
-                        listOfPojo.add(componentReportPojo);
-
+                        }
                     }
                 }
             }
         }
-
     }
 
     /**
@@ -119,6 +139,15 @@ public class ComponentReportModel {
      */
     public List<ComponentReport> getListOfPojo() {
         return listOfPojo;
+    }
+
+    /**
+     * Used to retrieve the title.
+     *
+     * @return title.
+     */
+    public String getTitle() {
+        return title;
     }
     
     /**
