@@ -82,9 +82,7 @@ public class HomePageBannerModel {
     /**
      *This method is automatically called by the Sling framework after the Sling Model object
      * is created and all dependencies are injected.
-     * Sets the title and file reference if they are not specified,
-     * and adjusts the button link format and check the current mode.
-     *
+     * Sets the title and file reference.
      */
     @PostConstruct
     protected void init() {
