@@ -8,13 +8,18 @@ import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.jcr.RepositoryException;
@@ -23,27 +28,67 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+;
 
+/**
+ * The  ComponentReportModel class is a Sling Model used to get all the  components
+ * present in the specified AEM path. It retrieves component details and prepares a list of component
+ * reports.
+ */
 @Model(adaptables = {Resource.class, SlingHttpServletRequest.class}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class ComponentReportModel {
 
+
+    /**
+     * The log - Logger object for logging messages specific to the
+     *  ComponentReportModel class.
+     */
+    private Logger log=LoggerFactory.getLogger(ComponentReportModel.class);
+
+    /**
+     * The title - title of Component
+     */
     @ValueMapValue
     private String title;
 
+    /**
+     * The dropDownPlaceHolder - represents the name to be displayed
+     * as a placeholder in a dropdown.
+     */
     @ValueMapValue
     private String dropDownPlaceHolder;
+    /**
+     * The resourceResolverFactory - ResourceResolverFactory service used to create instances of
+     *  ResourceResolver.
+     */
+    @OSGiService
+    private ResourceResolverFactory resourceResolverFactory;
 
+    /**
+     * The buttonLabel - label of button
+     */
     @ValueMapValue
     private String buttonLabel;
 
-
+    /**
+     * List containing ComponentReport objects.
+     */
     private List<ComponentReport> listOfPojo = new ArrayList<>();
 
-    private List<String> listOfTitle = new ArrayList<>();
-
+    /**
+     * The resource - Resource object
+     */
     @SlingObject
     private Resource resource;
 
+    /**
+     * This method is automatically called by the Sling after the Sling Model object
+     * is created and all dependencies are injected.
+     * It performs a query to retrieve all components present in the  path "/apps/aemtraining/components" of type "cq:Component".
+     * For each component found, it creates a ComponentReport object with title and path information,
+     * and adds it to  listOfPojo..
+     * @throws RepositoryException
+     */
 
     @PostConstruct
     protected void init() throws RepositoryException {
@@ -51,51 +96,73 @@ public class ComponentReportModel {
         predicateMap.put("path", "/apps/aemtraining/components");
         predicateMap.put("type", "cq:Component");
         predicateMap.put("p.limit", "-1");
+        final Map<String, Object> params = new HashMap<>();
+        params.put(ResourceResolverFactory.SUBSERVICE, "aem-training-content-reader");
+        ResourceResolver resourceResolver = null;
+        try {
+            resourceResolver = resourceResolverFactory.getServiceResourceResolver(params);
+        } catch (LoginException e) {
+            log.error("Login Exception : {}", e, e.getMessage());
+        }
+        if (resourceResolver != null) {
+            Session session = resourceResolver.adaptTo(Session.class);
+            PredicateGroup predicates = PredicateGroup.create(predicateMap);
+            if (session != null) {
+                QueryBuilder queryBuilder = resourceResolver.adaptTo(QueryBuilder.class);
+                if (queryBuilder != null) {
+                    Query query = queryBuilder.createQuery(predicates, session);
+                    SearchResult result = query.getResult();
+                    List<Hit> hits = result.getHits();
+                    if (!hits.isEmpty()) {
+                        for (Hit hit : hits) {
+                            Resource resource = hit.getResource();
+                            ValueMap valueMap = resource.getValueMap();
+                            String title = valueMap.get("jcr:title", "");
+                            String path = resource.getPath();
+                            path = path.replace("/apps/", "");
+                            ComponentReport componentReportPojo = new ComponentReport();
+                            componentReportPojo.setTitle(title);
+                            componentReportPojo.setPath(path);
+                            listOfPojo.add(componentReportPojo);
 
-        PredicateGroup predicates = PredicateGroup.create(predicateMap);
-        ResourceResolver resourceResolver = resource.getResourceResolver();
-        Session session = resourceResolver.adaptTo(Session.class);
-        if (session != null) {
-            QueryBuilder queryBuilder = resourceResolver.adaptTo(QueryBuilder.class);
-            if (queryBuilder != null) {
-                Query query = queryBuilder.createQuery(predicates, session);
-                SearchResult result = query.getResult();
-                List<Hit> hits = result.getHits();
-                if (!hits.isEmpty()) {
-                    for (Hit hit : hits) {
-                        Resource resource = hit.getResource();
-                        ValueMap valueMap = resource.getValueMap();
-                        String title = valueMap.get("jcr:title", "");
-                        String path = resource.getPath();
-                        path = path.replace("/apps/", "");
-                        ComponentReport componentReportPojo = new ComponentReport();
-                        componentReportPojo.setTitle(title);
-                        componentReportPojo.setPath(path);
-                        listOfPojo.add(componentReportPojo);
-                        listOfTitle.add(path);
+                        }
                     }
                 }
             }
         }
-
     }
 
+    /**
+     * Used to retrieve  list of component reports.
+     *
+     * @return List of ComponentReport objects.
+     */
     public List<ComponentReport> getListOfPojo() {
         return listOfPojo;
     }
 
-    public List<String> getListOfTitle() {
-        return listOfTitle;
-    }
-
+    /**
+     * Used to retrieve the title.
+     *
+     * @return title.
+     */
     public String getTitle() {
         return title;
     }
-
+    
+    /**
+     * Used to get a placeholder text for a dropdown.
+     * @return The placeholder string.
+     */
     public String getDropDownPlaceHolder() {
         return dropDownPlaceHolder;
     }
 
+    /**
+     * Used to get label text for a button.
+     *
+     * @return The button label string.
+     */
     public String getButtonLabel() {
         return buttonLabel;
     }

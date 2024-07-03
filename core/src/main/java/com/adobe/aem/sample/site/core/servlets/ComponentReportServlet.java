@@ -30,6 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The  ComponentReportServlet class is a Sling Servlet that handles GET requests to retrieve a list of pages
+ * where a specific component is present.
+ */
 @Component(service = Servlet.class, property =
         {
                 "sling.servlet.methods=GET",
@@ -40,14 +44,33 @@ import java.util.Map;
 )
 public class ComponentReportServlet extends SlingSafeMethodsServlet {
 
+
+    /**
+     * The log - Logger object
+     * Used for logging messages related to ComponentReportServlet.
+     */
     private Logger log = LoggerFactory.getLogger(ComponentReportServlet.class);
+
+    /**
+     * list - list to store the Path of pages where component is present.
+     */
     private List<String> list;
 
+    /**
+     * The resourceResolverFactory - Object of ResourceResolverFactory
+     */
     @Reference
     private ResourceResolverFactory resourceResolverFactory;
 
 
-
+    /**
+     *This method handles a Get Request and use to retrieve all pages where the specific component is present and
+     * add path of  pages to a List.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
         list = new ArrayList<>();
