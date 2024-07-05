@@ -54,7 +54,7 @@ public class GenerateKey extends SlingSafeMethodsServlet {
             try {
                 resourceResolver = resourceResolverFactory.getServiceResourceResolver(params);
             } catch (LoginException e) {
-                e.printStackTrace();
+                log.error("Login Exception {}", e.getMessage(),e);
             }
             if(resourceResolver!=null) {
                 Resource resource = resourceResolver.getResource(path);
@@ -66,10 +66,11 @@ public class GenerateKey extends SlingSafeMethodsServlet {
                         jsonObject.put("email", email);
                         jsonObject.put("name", name);
                     } catch (JSONException e) {
-                        log.error("Json Exception {}", e);
+                        log.error("Json Exception {}", e.getMessage(),e);
                     }
                     ValueMap valueMap = resource.getValueMap();
                     responseObj = checkForTokenInNode(email, resource, valueMap, resourceResolver, jsonObject, response, uniqueToken, name);
+                    resourceResolver.close();
                 }
             }
 
