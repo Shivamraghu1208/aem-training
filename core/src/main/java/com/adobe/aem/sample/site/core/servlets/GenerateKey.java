@@ -3,9 +3,11 @@ package com.adobe.aem.sample.site.core.servlets;
 import com.adobe.aem.sample.site.core.services.TokenDetailService;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.json.JSONException;
@@ -18,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -32,7 +35,8 @@ public class GenerateKey extends SlingSafeMethodsServlet {
 
     @Reference
     private transient TokenDetailService tokenDetailService;
-
+    @Reference
+    private ResourceResolverFactory resourceResolverFactory;
     private Logger log = LoggerFactory.getLogger(ComponentReportServlet.class);
 
     @Override
@@ -44,20 +48,29 @@ public class GenerateKey extends SlingSafeMethodsServlet {
         String token = request.getParameter("token");
 
         if (name != null && email != null) {
-            ResourceResolver resourceResolver = request.getResourceResolver();
-            Resource resource = resourceResolver.getResource(path);
-            if (resource != null) {
-                String uniqueToken = UUID.randomUUID().toString();
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("token", uniqueToken);
-                    jsonObject.put("email", email);
-                    jsonObject.put("name", name);
-                } catch (JSONException e) {
-                    log.error("Json Exception {}", e);
+            Map<String,Object> params=new HashMap<>();
+            params.put(ResourceResolverFactory.SUBSERVICE,"aem-training-content-reader");
+            ResourceResolver resourceResolver = null;
+            try {
+                resourceResolver = resourceResolverFactory.getServiceResourceResolver(params);
+            } catch (LoginException e) {
+                e.printStackTrace();
+            }
+            if(resourceResolver!=null) {
+                Resource resource = resourceResolver.getResource(path);
+                if (resource != null) {
+                    String uniqueToken = UUID.randomUUID().toString();
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("token", uniqueToken);
+                        jsonObject.put("email", email);
+                        jsonObject.put("name", name);
+                    } catch (JSONException e) {
+                        log.error("Json Exception {}", e);
+                    }
+                    ValueMap valueMap = resource.getValueMap();
+                    responseObj = checkForTokenInNode(email, resource, valueMap, resourceResolver, jsonObject, response, uniqueToken, name);
                 }
-                ValueMap valueMap = resource.getValueMap();
-                responseObj = checkForTokenInNode(email, resource, valueMap, resourceResolver, jsonObject, response, uniqueToken, name);
             }
 
         } else if (token != null) {
