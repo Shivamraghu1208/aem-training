@@ -1,6 +1,7 @@
 package com.adobe.aem.sample.site.core.servlets;
 
 import com.adobe.aem.sample.site.core.services.TokenDetailService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
@@ -47,7 +48,7 @@ public class GenerateKey extends SlingSafeMethodsServlet {
         String path = tokenDetailService.getResourcePath();
         String token = request.getParameter("token");
 
-        if (name != null && email != null) {
+        if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(email)) {
             Map<String,Object> params=new HashMap<>();
             params.put(ResourceResolverFactory.SUBSERVICE,"aem-training-content-reader");
             ResourceResolver resourceResolver = null;
@@ -74,7 +75,7 @@ public class GenerateKey extends SlingSafeMethodsServlet {
                 }
             }
 
-        } else if (token != null) {
+        } else if (StringUtils.isNotBlank(token)) {
             Map<String, String> stringValueMap = tokenDetailService.getTokenDetails(token);
             if (stringValueMap != null && !stringValueMap.isEmpty()) {
                 String name1 = stringValueMap.get("name");
