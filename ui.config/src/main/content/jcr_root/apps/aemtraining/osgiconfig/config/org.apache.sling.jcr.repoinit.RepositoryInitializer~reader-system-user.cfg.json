@@ -1,5 +1,7 @@
 {
   "scripts":[
-  "create service user reader-system-user\nset ACL for reader-system-user\nallow jcr:read,rep:write,crx:replicate on /content\nallow jcr:all on /content/we-retail\nend"
+  "create service user reader-system-user\nset ACL on  /conf, /apps, /content, /var/workflow, /etc  \nallow jcr:all for reader-system-user\nend"
   ]
 }
+
+

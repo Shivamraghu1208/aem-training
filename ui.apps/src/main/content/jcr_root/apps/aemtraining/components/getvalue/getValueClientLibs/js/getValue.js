@@ -12,7 +12,21 @@ const id= document.querySelector(".response-value-container").getAttribute("id")
                   },
                    success: function(success){
                      document.querySelector(".response-value-container").innerHTML="";
-                     $('#'+id).append('<div>'+success+'</div>');
+                      let content = '<div>';
+                                 if (success.result.status === "Valid Token") {
+                                     content += '<ul>' +
+                                         '<li>Name: ' + success.result.name + '</li>' +
+                                         '<li>Email: ' + success.result.email + '</li>' +
+                                         '<li>Status: ' + success.result.status + '</li>' +
+                                         '</ul>';
+                                 } else {
+                                     content += '<ul>' +
+                                         '<li>:Message ' + success.result.message + '</li>' +
+                                         '<li>Status: ' + success.result.status + '</li>' +
+                                         '</ul>';
+                                 }
+                                 content += '</div>';
+                     $('#'+id).append('<div>'+content+'</div>');
                      },
                    error: function(error){
                     error.log(error);
