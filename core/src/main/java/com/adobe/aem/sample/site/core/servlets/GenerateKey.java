@@ -21,6 +21,12 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * A servlet that generates unique token and retrieves token details.
+ * If the name and email parameters are provided, it generates a new token or get an existing one.
+ * If the token parameter is provided, it retrieves the token details.
+ */
+
 @Component(service = {Servlet.class}, property = {
         "sling.servlet.methods=GET",
         "sling.servlet.resourceTypes=aemtraining/components/getkey",
@@ -30,11 +36,26 @@ import java.util.UUID;
 })
 public class GenerateKey extends SlingSafeMethodsServlet {
 
+    /**
+     * The tokenDetailService - A TokenDetailService object
+     */
     @Reference
     private transient TokenDetailService tokenDetailService;
 
+
+    /**
+     * The log - A logger instance used for Logging messages related to ComponentReportServlet.
+     */
     private Logger log = LoggerFactory.getLogger(ComponentReportServlet.class);
 
+    /**
+     * Handles GET requests and response will be token details or generates a new token.
+     *
+     * @param request  the  SlingHttpServletRequest object
+     * @param response the SlingHttpServletResponse
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
         String responseObj = "";
@@ -57,7 +78,7 @@ public class GenerateKey extends SlingSafeMethodsServlet {
                     log.error("Json Exception {}", e);
                 }
                 ValueMap valueMap = resource.getValueMap();
-                responseObj = checkForTokenInNode(email, resource, valueMap, resourceResolver, jsonObject, response, uniqueToken, name);
+                responseObj = checkForTokenInNode(email, resource, valueMap, resourceResolver, jsonObject, uniqueToken, name);
             }
 
         } else if (token != null) {
@@ -73,7 +94,20 @@ public class GenerateKey extends SlingSafeMethodsServlet {
         response.getWriter().write(responseObj);
     }
 
-    private synchronized String checkForTokenInNode(String email, Resource resource, ValueMap valueMap, ResourceResolver resourceResolver, JSONObject jsonObject, SlingHttpServletResponse response, String token, String name) throws IOException {
+    /**
+     * This method check weather token is already present or not
+     * if token is not present the it generate a unique token or
+     * if it is present then return the existing token.
+     * @param email - The email address to check for an existing token.
+     * @param resource - The resource where the token information is stored
+     * @param valueMap - The value map containing the existing token details.
+     * @param resourceResolver - The resource resolver for committing changes.
+     * @param jsonObject - The JSON object containing the token details to store.
+     * @param token - The token to store if it is not already present.
+     * @param name - The name associated with the token.
+     * @throws IOException
+     */
+    private synchronized String checkForTokenInNode(String email, Resource resource, ValueMap valueMap, ResourceResolver resourceResolver, JSONObject jsonObject, String token, String name) throws IOException {
         if (!valueMap.containsKey(email)) {
             resource.adaptTo(ModifiableValueMap.class).put(email, jsonObject.toString());
             resourceResolver.commit();

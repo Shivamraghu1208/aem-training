@@ -16,11 +16,27 @@ import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+/**
+ * The StartWorkFlowServlet - this servlet is used to start a workflow in AEM.
+ */
 @Component(service = {Servlet.class}, property = {"sling.servlet.methods=GET", "sling.servlet.paths=/bin/checkWorkflow", "sling.servlet.extensions=json"})
-public class CheckWorkFlowServlet extends SlingSafeMethodsServlet {
+public class StartWorkFlowServlet extends SlingSafeMethodsServlet {
+
+
+    /**
+     * The workflowService - workflowService object used to get workflowService.
+     */
     @Reference
     protected WorkflowService workflowService;
 
+    /**
+     * Handles GET requests to start a workflow.
+     *
+     * @param request  SlingHttpServletRequest object.
+     * @param response SlingHttpServletResponse object.
+     * @throws ServletException
+     * @throws IOException
+     */
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
         ResourceResolver resourceResolver = request.getResourceResolver();
         Session session = (Session)resourceResolver.adaptTo(Session.class);

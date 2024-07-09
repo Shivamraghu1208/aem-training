@@ -40,28 +40,66 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The PageUnpublishScheduler - A scheduler that retrieves a list of page paths from an  API response
+ * and unpublishes these pages in AEM.
+ *
+ * It uses a configured API URL, username, and password to fetch data, and then performs
+ * replication to unpublish the  pages.
+ */
 @Component(immediate = true, service = Runnable.class)
 @Designate(ocd = PageUnpublishSchedulerConfiguration.class)
 public class PageUnpublishScheduler implements Runnable {
 
+
+    /**
+     * The log - A logger instance used for Logging messages related to PageUnpublishScheduler.
+     */
     private Logger log = LoggerFactory.getLogger(PageUnpublishScheduler.class);
 
+    /**
+     * The AEM_TRAINING_CONTENT_READER - A string Constant which contains a Service User
+     * used to get resource resolver
+     */
     private static final String AEM_TRAINING_CONTENT_READER = "aem-training-content-reader";
 
+    /**
+     * The resourceResolverFactory - ResourceResolverFactory service used to create object of
+     *  ResourceResolver.
+     */
     @Reference
     private ResourceResolverFactory resourceResolverFactory;
 
+    /**
+     * The cryptoSupport -  CryptoSupport service used for decrypting encrypted text.
+     */
     @Reference
     private CryptoSupport cryptoSupport;
-
+    /**
+     * The replicator - To replicate the content.
+     */
     @Reference
     private Replicator replicator;
 
+    /**
+     * Configured API URL for fetching data.
+     */
     private String apiUrl;
 
+    /**
+     * username for authentication with the API.
+     */
     private String username;
-
+    /**
+     *  password for authentication with the API.
+     */
     private String password;
+
+    /**
+     * This method get apiUrl from Configuration service and
+     * and Decrypt username and password.
+     * @param config Configuration object
+     */
     @Activate
     protected void activate(PageUnpublishSchedulerConfiguration config) {
         log.debug("Start of activate method in PageUnpublishScheduler");
@@ -72,6 +110,9 @@ public class PageUnpublishScheduler implements Runnable {
         log.debug("End of activate method in PageUnpublishScheduler and ApiUrl is {}", apiUrl);
     }
 
+    /**
+     * Executes the logic. Fetches API response, extracts page paths, and unpublishes pages.
+     */
     @Override
     public void run() {
         log.debug("Start of run method in PageUnpublishScheduler");
@@ -83,6 +124,11 @@ public class PageUnpublishScheduler implements Runnable {
         }
         log.debug("End of run Method PageUnpublishScheduler");
     }
+    /**
+     * Unpublish the pages based on listOfPagePath.
+     *
+     * @param listOfPagePath List of page paths to unpublish.
+     */
     private void unPublishPage(List<String> listOfPagePath) {
         ResourceResolver resourceResolver = getResourceResolver();
         if (resourceResolver != null) {
@@ -99,6 +145,12 @@ public class PageUnpublishScheduler implements Runnable {
         }
 
     }
+    /**
+     * Retrieves a list of page paths based on the JSON response from the API.
+     *
+     * @param jsonResponse JSON response containing page data.
+     * @return List of page paths.
+     */
      private List<String> getPagePathList(JsonObject jsonResponse) {
         List<String> listOfPagePath = new ArrayList<>();
         Map<String, String> predicateMap = new HashMap<>();
@@ -150,6 +202,11 @@ public class PageUnpublishScheduler implements Runnable {
         return listOfPagePath;
     }
 
+    /**
+     * Retrieves a ResourceResolver instance using the AEM_TRAINING_CONTENT_READER service user.
+     *
+     * @return ResourceResolver instance or null if login fails.
+     */
     private ResourceResolver getResourceResolver() {
 
         final Map<String, Object> params = new HashMap<>();
@@ -162,6 +219,12 @@ public class PageUnpublishScheduler implements Runnable {
         }
         return null;
     }
+    /**
+     * Decrypts an encrypted text using the CryptoSupport service.
+     *
+     * @param encryptedText Encrypted text to decrypt.
+     * @return Decrypted text or  encrypted text if decryption fails.
+     */
     public String getDecryptedValue(final String encryptedText) {
         try {
             return cryptoSupport.isProtected(encryptedText)
@@ -173,6 +236,11 @@ public class PageUnpublishScheduler implements Runnable {
         return encryptedText;
     }
 
+    /**
+     * Fetches the API response from the configured API URL.
+     *
+     * @return JsonObject .
+     */
     private JsonObject fetchApiResponse() {
         try {
             URL url = new URL(apiUrl);
