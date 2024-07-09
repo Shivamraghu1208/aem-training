@@ -31,17 +31,16 @@ public class CustomCarCodesServlet extends SlingSafeMethodsServlet {
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
 
-        JsonObject object = new JsonObject();
+        JsonObject responseJson = new JsonObject();
 
         JsonArray responseCodes = new JsonArray();
         responseCodes.add("CA1234");
         responseCodes.add("CA4521");
         responseCodes.add("CA9875");
-
-        object.add("responseCodes", responseCodes);
-
-        object.addProperty("status", 200);
-
-        response.getWriter().write(object.toString());
+        responseJson.add("responseCodes", responseCodes);
+        responseJson.addProperty("status", 200);
+        response.setContentLength(responseJson.toString().getBytes().length);
+        response.setContentType("application/json");
+        response.getOutputStream().write(responseJson.toString().getBytes());
     }
 }

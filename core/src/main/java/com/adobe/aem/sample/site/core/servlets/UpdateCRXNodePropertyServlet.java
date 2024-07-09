@@ -1,6 +1,7 @@
 package com.adobe.aem.sample.site.core.servlets;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.Servlet;
@@ -30,15 +31,19 @@ import org.slf4j.LoggerFactory;
  */
 @Component(service = {Servlet.class}, property = {"sling.servlet.methods=GET", "sling.servlet.paths=/bin/shivam/runmode", "sling.servlet.extensions=json"})
 public class UpdateCRXNodePropertyServlet extends SlingSafeMethodsServlet {
+
+
+    /**
+     * The logger - A Logger object used to log message related to UpdateCRXNodePropertyServlet .
+     */
     Logger logger = LoggerFactory.getLogger(UpdateCRXNodePropertyServlet.class);
-
-
     /**
      * The resourceResolverFactory - Object of resourceResolverFactory.
      * used for resolving resources and modifying their properties.
      */
     @Reference
     private ResourceResolverFactory resourceResolverFactory;
+
 
     /**
      * This method handles GET request and use resourceResolverFactory to resolve the resource and
@@ -61,14 +66,21 @@ public class UpdateCRXNodePropertyServlet extends SlingSafeMethodsServlet {
                     modifiableValueMap.put("Shivam", value);
                     try {
                         resourceResolver.commit();
+                        resourceResolver.close();
+                        response.getOutputStream().write("Success".getBytes(StandardCharsets.UTF_8));
                     } catch (PersistenceException e) {
-                        e.printStackTrace();
+                        logger.error("PersistenceException  : {}",e.getMessage(),e);
                     }
                 }
             }
-        } catch (LoginException e) {
-            this.logger.error("Exception come : {}", (Throwable)e);
-        }
-        response.getWriter().write("Servlet Called Successfully");
+            else
+            {
+                response.getOutputStream().write("Resource not found".getBytes(StandardCharsets.UTF_8));
+            }
+          } catch (LoginException e) {
+              logger.error("Exception come : {}", (Throwable)e);
+           }
+
+
     }
 }
